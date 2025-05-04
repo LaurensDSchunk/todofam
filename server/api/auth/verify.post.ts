@@ -1,3 +1,5 @@
+import { validateEmail } from "~/utils/validation/email";
+
 export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
@@ -10,6 +12,14 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: "Invalid body",
+    });
+  }
+
+  const emailValidation = validateEmail(email);
+  if (!emailValidation.valid) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: emailValidation.errors![0],
     });
   }
 

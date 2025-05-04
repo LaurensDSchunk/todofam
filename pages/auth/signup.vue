@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { sanitizeName } from "~/utils/sanitization/name";
+
 const name = ref<string>("");
 const email = ref<string>("");
 const password = ref<string>("");
@@ -10,7 +12,7 @@ const disabled = ref<boolean>(false);
 
 async function signUp() {
   disabled.value = true;
-  await useAuth().signUp(email.value, password.value, name.value);
+  await useAuth().signUp(email.value, password.value, sanitizeName(name.value));
   disabled.value = false;
 
   state.value = "verify";

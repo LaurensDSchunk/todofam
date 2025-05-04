@@ -1,3 +1,6 @@
+import { validateEmail } from "~/utils/validation/email";
+import { validatePassword } from "~/utils/validation/password";
+
 export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
@@ -8,6 +11,23 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: "Invalid arguments",
+    });
+  }
+
+  const emailValidation = validateEmail(email);
+  const passwordValidation = validatePassword(password);
+
+  if (!emailValidation.valid) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: emailValidation.errors![0],
+    });
+  }
+
+  if (!passwordValidation.valid) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: passwordValidation.errors![0],
     });
   }
 
@@ -23,5 +43,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return data.user;
+  return { success: true };
 });
