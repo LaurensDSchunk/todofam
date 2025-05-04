@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUser, signIn, signOut, signUp, verifyOTP } from "./util/auth";
+import { getUser, signIn, signOut, signUp, verifyOTP } from "./utils/auth";
 
 const email = ref<string>("");
 const name = ref<string>("");

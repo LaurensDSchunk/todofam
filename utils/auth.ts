@@ -1,6 +1,6 @@
 export async function signUp(email: string, password: string, name: string) {
   try {
-    const res = await $fetch("/api/auth/signup", {
+    const res = await $fetch("/api/auth/sign-up", {
       method: "POST",
       body: {
         email: email,
@@ -45,7 +45,7 @@ export async function getUser() {
 
 export async function signOut() {
   try {
-    const res = await $fetch("/api/auth/signout", {
+    const res = await $fetch("/api/auth/sign-out", {
       method: "POST",
       credentials: "include",
     });
@@ -56,7 +56,7 @@ export async function signOut() {
 
 export async function signIn(email: string, password: string) {
   try {
-    const res = await $fetch("/api/auth/signin", {
+    const res = await $fetch("/api/auth/sign-in", {
       method: "POST",
       body: {
         email: email,

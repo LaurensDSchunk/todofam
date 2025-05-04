@@ -4,7 +4,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { token, email, type } = body;
 
-  if (!token || !email || !type) {
+  const allowedTypes = ["signup"];
+
+  if (!token || !email || !type || !allowedTypes.includes(type)) {
     throw createError({
       statusCode: 400,
       statusMessage: "Invalid body",
