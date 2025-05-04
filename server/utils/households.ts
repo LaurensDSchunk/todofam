@@ -1,19 +1,10 @@
-import { SupabaseClient } from "@supabase/supabase-js";
 import { H3Event } from "h3";
+import { getUserId } from "./auth";
 
 export async function createHousehold(event: H3Event, name: string) {
   const supabase = event.context.supabase;
 
-  const user = await getUser(event);
-
-  if (!user) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: "No user logged in",
-    });
-  }
-
-  const userId: string = user.id;
+  const userId = await getUserId(event);
 
   // Create a new household
   const { data: household, error: createHouseholdError } = await supabase
@@ -31,9 +22,41 @@ export async function createHousehold(event: H3Event, name: string) {
   }
 
   // Add a join between the household and user
-  const { data: connection, error } = await supabase
+  const { data, error: connectionError } = await supabase
     .from("household_members")
     .insert({ household_id: household.id, user_id: userId });
 
-  // TODO: Finish this
+  if (connectionError) {
+    // Make sure no empty houses
+    const { error: deletionError } = await supabase
+      .from("households")
+      .delete()
+      .eq("id", household.id);
+
+    throw createError({
+      statusCode: 500,
+      statusMessage:
+        "Error linking user to household: " + connectionError.message,
+    });
+  }
+}
+
+export async function getHouseholds(event: H3Event) {
+  const supabase = event.context.supabase;
+
+  const userId = await getUserId(event);
+
+  const { data, error } = await supabase
+    .from("household_members")
+    .select()
+    .eq("user_id", userId);
+
+  if (error || !data) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Error getting households: " + error.message,
+    });
+  }
+
+  return data;
 }

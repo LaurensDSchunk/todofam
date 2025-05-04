@@ -1,4 +1,4 @@
-import { getUser } from "../utils/supabase";
+import { getUser } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
   const path = event.path;

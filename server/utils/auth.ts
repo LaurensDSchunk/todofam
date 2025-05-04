@@ -15,3 +15,16 @@ export async function getUser(event: H3Event) {
 
   return null;
 }
+
+export async function getUserId(event: H3Event) {
+  const user = await getUser(event);
+
+  if (!user) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: "No user logged in",
+    });
+  }
+
+  return user.id;
+}
