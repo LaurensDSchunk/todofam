@@ -6,10 +6,10 @@ const disabled = ref<boolean>(false);
 
 async function signIn() {
   disabled.value = true;
-  const { success } = await useAuth().signIn(email.value, password.value);
+  const success = await useAuth().signIn(email.value, password.value);
 
   if (success) {
-    useRouter().replace("/");
+    useRouter().push("/");
   }
   disabled.value = false;
 }

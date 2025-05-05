@@ -5,9 +5,7 @@ const name = ref<string>("");
 const email = ref<string>("");
 const password = ref<string>("");
 const passwordRepeat = ref<string>("");
-const token = ref<string>("");
 
-const state = ref<"sign-up" | "verify">("sign-up");
 const disabled = ref<boolean>(false);
 
 async function signUp() {
@@ -25,17 +23,7 @@ async function signUp() {
   );
 
   if (success) {
-    state.value = "verify";
-  }
-  disabled.value = false;
-}
-
-async function verify() {
-  disabled.value = true;
-  const success = await useAuth().verifyOtp(email.value, token.value, "signup");
-
-  if (success) {
-    useRouter().push("/");
+    useRouter().replace(`/auth/verify?email=${email.value}`);
   }
   disabled.value = false;
 }
@@ -43,7 +31,7 @@ async function verify() {
 
 <template>
   <div id="sign-un-page-container">
-    <div id="sign-up-container" v-if="state == 'sign-up'">
+    <div id="sign-up-container">
       <form @submit.prevent="signUp()" autocomplete="on">
         <h1>Sign Up</h1>
 
@@ -88,24 +76,6 @@ async function verify() {
         />
 
         <button :disabled="disabled" type="submit">Sign Up</button>
-      </form>
-    </div>
-
-    <div id="verify-container" v-else>
-      <form @submit.prevent="verify()">
-        <h1>Welcome, {{ name }}!</h1>
-        <p>A code has been sent to {{ email }}. Enter the code below:</p>
-
-        <label for="token-input">Code:</label>
-        <input
-          type="text"
-          id="token-input"
-          v-model="token"
-          inputmode="numeric"
-          autocomplete="one-time-code"
-        />
-
-        <button :disabled="disabled">Confirm</button>
       </form>
     </div>
   </div>

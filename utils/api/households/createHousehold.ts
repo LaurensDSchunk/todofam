@@ -1,18 +1,17 @@
-export async function signIn(email: string, password: string) {
+export async function createHousehold(name: string) {
   try {
-    const res = await $fetch("/api/auth/sign-in", {
+    const res = await $fetch("/api/households", {
       method: "POST",
       body: {
-        email: email,
-        password: password,
+        name: name,
       },
       credentials: "include",
     });
 
-    return { success: true };
+    return { success: true, data: res };
   } catch (e: any) {
     const errorMessage = e?.data?.message || e?.message || "Unknown error";
-    console.error("Sign-In error:", errorMessage);
+    console.error("Create Household Error:", errorMessage);
 
     return {
       success: false,

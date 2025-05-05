@@ -84,7 +84,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           name: string
-          owner_id: string
+          owner_id?: string
         }
         Update: {
           created_at?: string | null

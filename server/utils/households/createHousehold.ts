@@ -1,19 +1,26 @@
 import { H3Event } from "h3";
-import { getUserId } from "./auth";
+import { getUserId } from "../auth/getUserId";
 
 export async function createHousehold(event: H3Event, name: string) {
   const supabase = event.context.supabase;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  console.log("user", user);
 
   const userId = await getUserId(event);
 
   // Create a new household
   const { data: household, error: createHouseholdError } = await supabase
     .from("households")
-    .insert({ name: name, owner_id: userId })
+    .insert({ name: name })
     .select()
     .single();
 
   if (createHouseholdError) {
+    console.log(createHouseholdError);
     throw createError({
       statusCode: 500,
       statusMessage:
@@ -39,24 +46,6 @@ export async function createHousehold(event: H3Event, name: string) {
         "Error linking user to household: " + connectionError.message,
     });
   }
-}
 
-export async function getHouseholds(event: H3Event) {
-  const supabase = event.context.supabase;
-
-  const userId = await getUserId(event);
-
-  const { data, error } = await supabase
-    .from("household_members")
-    .select()
-    .eq("user_id", userId);
-
-  if (error || !data) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Error getting households: " + error.message,
-    });
-  }
-
-  return data;
+  return household;
 }
