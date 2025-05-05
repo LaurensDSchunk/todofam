@@ -6,23 +6,41 @@ const disabled = ref<boolean>(false);
 
 async function signIn() {
   disabled.value = true;
-  const res = await useAuth().signIn(email.value, password.value);
+  const { success } = await useAuth().signIn(email.value, password.value);
+
+  if (success) {
+    useRouter().replace("/");
+  }
   disabled.value = false;
 }
 </script>
 
 <template>
   <div id="sign-in-page-container">
-    <form>
+    <form @submit.prevent="signIn" autocomplete="on">
       <h1>Sign In</h1>
 
-      <label for="email-input">Email: </label>
-      <input type="email" id="email-input" v-model="email" />
+      <label for="email-input">Email:</label>
+      <input
+        type="email"
+        id="email-input"
+        name="email"
+        v-model="email"
+        autocomplete="email"
+        required
+      />
 
-      <label for="password-input">Password: </label>
-      <input type="password" id="password-input" v-model="password" />
+      <label for="password-input">Password:</label>
+      <input
+        type="password"
+        id="password-input"
+        name="current-password"
+        v-model="password"
+        autocomplete="current-password"
+        required
+      />
 
-      <button @click="signIn()" :disabled="disabled">Sign In</button>
+      <button type="submit" :disabled="disabled">Sign In</button>
     </form>
   </div>
 </template>

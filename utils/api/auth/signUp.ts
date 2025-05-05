@@ -9,7 +9,15 @@ export async function signUp(email: string, password: string, name: string) {
       },
       credentials: "include",
     });
-  } catch (e) {
-    console.error(e);
+
+    return { success: true };
+  } catch (e: any) {
+    const errorMessage = e?.data?.message || e?.message || "Unknown error";
+    console.error("Sign-up error:", errorMessage);
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
   }
 }

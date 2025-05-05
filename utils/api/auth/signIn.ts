@@ -9,8 +9,14 @@ export async function signIn(email: string, password: string) {
       credentials: "include",
     });
 
-    return res;
-  } catch (e) {
-    console.error(e);
+    return { success: true };
+  } catch (e: any) {
+    const errorMessage = e?.data?.message || e?.message || "Unknown error";
+    console.error("Sign-up error:", errorMessage);
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
   }
 }

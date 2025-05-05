@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
   const body = await readBody(event);
-  const { email, password, rawName } = body;
+  const { email, password, name: rawName } = body;
 
   if (!email || !password || !rawName) {
     throw createError({
