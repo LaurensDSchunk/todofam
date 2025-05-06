@@ -1,9 +1,11 @@
+import type { verifyRequest } from "~/types/auth.types";
+
 import { validateEmail } from "~/utils/validation/email";
 
 export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
-  const body = await readBody(event);
+  const body = await readBody<verifyRequest>(event);
   const { token, email, type } = body;
 
   const allowedTypes = ["signup"];
@@ -36,5 +38,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return data.user;
+  return { success: true };
 });

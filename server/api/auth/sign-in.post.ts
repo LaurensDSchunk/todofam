@@ -1,10 +1,12 @@
+import type { signInRequest } from "~/types/auth.types";
+
 import { validateEmail } from "~/utils/validation/email";
 import { validatePassword } from "~/utils/validation/password";
 
 export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
-  const body = await readBody(event);
+  const body = await readBody<signInRequest>(event);
   const { email, password } = body;
 
   if (!email || !password) {

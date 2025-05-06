@@ -1,3 +1,5 @@
+import type { signUpRequest } from "~/types/auth.types";
+
 import { validateEmail } from "~/utils/validation/email";
 import { validatePassword } from "~/utils/validation/password";
 import { validateName } from "~/utils/validation/name";
@@ -6,7 +8,7 @@ import { sanitizeName } from "~/utils/sanitization/name";
 export default defineEventHandler(async (event) => {
   const supabase = event.context.supabase;
 
-  const body = await readBody(event);
+  const body = await readBody<signUpRequest>(event);
   const { email, password, name: rawName } = body;
 
   if (!email || !password || !rawName) {
