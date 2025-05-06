@@ -61,11 +61,16 @@ async function signIn() {
           />
         </div>
 
-        <div>
-          <Button type="submit" :disabled="disabled" class="w-full">
-            Sign In
-          </Button>
-        </div>
+        <Button type="submit" :disabled="disabled" class="w-full">
+          Sign In
+        </Button>
+
+        <p class="text-sm text-center">
+          Don't have an account?
+          <RouterLink class="text-blue-600" to="/auth/sign-up"
+            >Sign Up</RouterLink
+          >
+        </p>
       </form>
     </div>
   </div>

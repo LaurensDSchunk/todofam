@@ -3,6 +3,7 @@ import { signOut } from "~/utils/api/auth/signOut";
 import { signUp } from "~/utils/api/auth/signUp";
 import { verifyOtp } from "~/utils/api/auth/verifyOtp";
 import { getUser } from "~/utils/api/auth/getUser";
+import { getUserName } from "~/utils/api/auth/getUserName";
 
 import { sanitizeName } from "~/utils/sanitization/name";
 import { validateEmail } from "~/utils/validation/email";
@@ -106,6 +107,7 @@ export function useAuth() {
     signOut: (...args: any[]) => refreshUserAfter(signOutHandler, ...args),
     signUp: signUpHandler,
     verifyOtp: (...args: any[]) => refreshUserAfter(verifyOtpHandler, ...args),
+    getUserName,
     getUser: updateUser,
   };
 }

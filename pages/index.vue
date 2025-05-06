@@ -1,48 +1,29 @@
-<script setup lang="ts">
-import { createHousehold } from "~/utils/api/households/createHousehold";
-import { deleteHousehold } from "~/utils/api/households/deleteHousehold";
-import { getHousehold } from "~/utils/api/households/getHousehold";
-import { listHouseholds } from "~/utils/api/households/listHouseholds";
-
-const houses = ref();
-const house = ref();
-
-async function createHouse() {
-  const { data: newhouse } = await createHousehold("goon house");
-  console.log(newhouse);
-
-  const { data } = await listHouseholds();
-  houses.value = data;
-}
-
-async function getHouses() {
-  const { data } = await listHouseholds();
-  if (!data) return;
-
-  const { data: houseRet } = await getHousehold(data[0].id);
-
-  console.log(houseRet);
-
-  house.value = houseRet;
-}
-
-async function deleteHouse() {
-  const { success } = await deleteHousehold(house.value.id);
-}
-</script>
-
 <template>
-  <h1>To-Do Fam</h1>
-  <p>A household task manager.</p>
-
-  <RouterLink to="/auth/signup">Sign Up</RouterLink>
-  <RouterLink to="/auth/signin">Sign In</RouterLink>
-
-  {{ houses }}
-
-  <button @click="createHouse()">CREATE</button>
-
-  {{ house }}
-  <button @click="getHouses()">Get House</button>
-  <button @click="deleteHouse()">del</button>
+  <section
+    class="min-h-[calc(100vh-65px)] flex items-center justify-center bg-gray-50 px-4"
+  >
+    <div class="max-w-2xl text-center space-y-6">
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900">
+        Welcome to <span class="text-blue-600">To-Do Fam</span>
+      </h1>
+      <p class="text-lg text-gray-600">
+        Organize your household tasks effortlessly. Share to-do lists, assign
+        responsibilities, and keep your family in sync.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <NuxtLink
+          to="/auth/sign-up"
+          class="inline-block px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
+        >
+          Get Started
+        </NuxtLink>
+        <NuxtLink
+          to="/auth/sign-in"
+          class="inline-block px-6 py-3 border border-blue-600 text-blue-600 font-medium rounded-md hover:bg-blue-50 transition"
+        >
+          Sign In
+        </NuxtLink>
+      </div>
+    </div>
+  </section>
 </template>

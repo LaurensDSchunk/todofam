@@ -7,15 +7,15 @@ import { getUser } from "../utils/auth/getUser";
 export default defineEventHandler(async (event) => {
   const path = event.path;
 
-  const unauthPaths = ["/", "/auth/signin", "/auth/signup", "/auth/verify"];
+  const unauthPaths = ["/", "/auth/sign-in", "/auth/sign-up", "/auth/verify"];
 
   const user = await getUser(event);
 
   if (user && unauthPaths.includes(path)) {
-    return sendRedirect(event, "/dashboard");
+    //return sendRedirect(event, "/dashboard");
   }
 
   if (!user && !unauthPaths.includes(path)) {
-    return sendRedirect(event, "/auth/signin");
+    //return sendRedirect(event, "/auth/sign-in");
   }
 });

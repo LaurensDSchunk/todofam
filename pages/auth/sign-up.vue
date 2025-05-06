@@ -34,13 +34,15 @@ async function signUp() {
 
 <template>
   <div class="h-full flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md m-4">
+    <div
+      class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md m-4 space-y-4"
+    >
       <form @submit.prevent="signUp()" autocomplete="on" class="space-y-6">
         <h1 class="text-2xl font-semibold text-center">Sign Up</h1>
 
         <Input
           id="name"
-          name="name"
+          name="username"
           label="Name"
           v-model="name"
           autocomplete="name"
@@ -77,12 +79,16 @@ async function signUp() {
           required
         />
 
-        <div>
-          <Button :disabled="disabled" type="submit" class="w-full">
-            Sign Up
-          </Button>
-        </div>
+        <Button :disabled="disabled" type="submit" class="w-full">
+          Sign Up
+        </Button>
       </form>
+      <p class="text-sm text-center">
+        Already have an account?
+        <RouterLink class="text-blue-600" to="/auth/sign-in"
+          >Sign In</RouterLink
+        >
+      </p>
     </div>
   </div>
 </template>

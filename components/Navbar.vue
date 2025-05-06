@@ -1,3 +1,16 @@
+<script setup lang="ts">
+const isOpen = ref(false);
+const userName = ref();
+
+const { user } = useAuth();
+
+watch(user, async (value) => {
+  userName.value = await useAuth().getUserName();
+});
+
+onMounted(async () => {});
+</script>
+
 <template>
   <nav class="bg-white border-b border-gray-200 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,6 +44,7 @@
           >
             Contact
           </RouterLink>
+          {{ userName }}
         </div>
         <!-- Mobile Menu Button -->
         <div class="flex items-center md:hidden">
@@ -109,9 +123,3 @@
     </div>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-
-const isOpen = ref(false);
-</script>

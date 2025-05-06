@@ -4,12 +4,10 @@ const { user } = useAuth();
 
 <template>
   <div>
-    <div class="flex flex-col min-h-screen">
-      <Navbar />
-      <NuxtRouteAnnouncer />
-      <main class="h-[calc(100vh-64px)]">
-        <NuxtPage />
-      </main>
-    </div>
+    <Navbar />
+    <NuxtRouteAnnouncer />
+    <main class="h-[calc(100vh-65px)]">
+      <NuxtPage />
+    </main>
   </div>
 </template>
