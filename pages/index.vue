@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { createHousehold } from "~/utils/api/households/createHousehold";
+import { getHousehold } from "~/utils/api/households/getHousehold";
 import { listHouseholds } from "~/utils/api/households/listHouseholds";
 
 const houses = ref();
+const house = ref();
 
 async function createHouse() {
   const { data: newhouse } = await createHousehold("goon house");
@@ -10,6 +12,17 @@ async function createHouse() {
 
   const { data } = await listHouseholds();
   houses.value = data;
+}
+
+async function getHouses() {
+  const { data } = await listHouseholds();
+  if (!data) return;
+
+  const { data: houseRet } = await getHousehold(data[0].id);
+
+  console.log(houseRet);
+
+  house.value = houseRet;
 }
 </script>
 
@@ -23,4 +36,7 @@ async function createHouse() {
   {{ houses }}
 
   <button @click="createHouse()">CREATE</button>
+
+  {{ house }}
+  <button @click="getHouses()">Get House</button>
 </template>
