@@ -16,3 +16,7 @@ export interface HouseholdSummary {
 export interface HouseholdCreateRequest {
   name: string;
 }
+
+export interface HouseholdUpdateRequest {
+  name?: string;
+}

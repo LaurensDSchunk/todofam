@@ -63,7 +63,7 @@ returns: { success: true }
 Creates a new task
 
 GET /households/:householdId/tasks
-returns: { success: true, tasks }
+returns: { tasks: Task[] }
 Gets the tasks in the household
 
 PATCH /households/:householdId/tasks/:taskId
