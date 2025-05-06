@@ -1,4 +1,4 @@
-import type { User } from "./user.types";
+import type { User } from "./auth.types";
 import type { Task } from "./task.types";
 
 export interface Household {
@@ -6,4 +6,13 @@ export interface Household {
   name: string;
   tasks: Task[];
   members: User[];
+}
+
+export interface HouseholdSummary {
+  id: string;
+  name: string;
+}
+
+export interface HouseholdCreateRequest {
+  name: string;
 }

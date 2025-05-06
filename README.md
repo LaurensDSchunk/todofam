@@ -28,22 +28,22 @@ returns { success: true }
 Signs the user out
 
 GET /auth/me
-returns: { email, id, name }
+returns: { user: User }
 Gets the user object.
 
 ## Household Routes
 
 GET /households
-returns: { name, id }[]
+returns: { households: HouseholdSummary[] }
 Gets an array of the households the user belongs to
 
 POST /households
 body: { name }
-returns: { success: true, id }
+returns: { success: true, household: HouseholdSummary }
 Creates a household with a name. The user joins it automatically
 
 GET /households/:householdId
-returns: { name, id, tasks, members }
+returns: { household: Household }
 Gets the household data
 
 PATCH /households/:householdId
