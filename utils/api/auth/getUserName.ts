@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 
-export async function getUserName(): Promise<String | null> {
+export async function getUserName(): Promise<string | null> {
   try {
     const res = await $fetch("/api/auth/me/name", {
       method: "GET",

@@ -2,13 +2,22 @@
 const isOpen = ref(false);
 const userName = ref();
 
-const { user } = useAuth();
+const auth = useAuth();
+
+const { user } = auth;
 
 watch(user, async (value) => {
   userName.value = await useAuth().getUserName();
 });
 
-onMounted(async () => {});
+onMounted(async () => {
+  userName.value = await useAuth().getUserName();
+});
+
+async function signOut() {
+  await useAuth().signOut();
+  useRouter().replace("/");
+}
 </script>
 
 <template>
@@ -22,7 +31,7 @@ onMounted(async () => {});
           </RouterLink>
         </div>
         <!-- Navigation Links -->
-        <div class="hidden md:flex space-x-8 items-center">
+        <div class="hidden md:flex space-x-8 items-center" v-if="!user">
           <RouterLink
             to="/"
             class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
@@ -44,10 +53,13 @@ onMounted(async () => {});
           >
             Contact
           </RouterLink>
-          {{ userName }}
         </div>
+        <div v-else class="md:flex space-x-8 items-center">
+          <Button @click="signOut" variant="primary">{{ userName }}</Button>
+        </div>
+
         <!-- Mobile Menu Button -->
-        <div class="flex items-center md:hidden">
+        <div class="flex items-center md:hidden" v-if="!user">
           <button
             @click="isOpen = !isOpen"
             type="button"

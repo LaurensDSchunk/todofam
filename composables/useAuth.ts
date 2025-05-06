@@ -92,6 +92,14 @@ export function useAuth() {
     return true;
   }
 
+  async function getUserNameHandler() {
+    if (!user.value) {
+      return;
+    }
+
+    return await getUserName();
+  }
+
   async function refreshUserAfter(
     action: (...args: any[]) => Promise<any>,
     ...args: any[]
@@ -107,7 +115,7 @@ export function useAuth() {
     signOut: (...args: any[]) => refreshUserAfter(signOutHandler, ...args),
     signUp: signUpHandler,
     verifyOtp: (...args: any[]) => refreshUserAfter(verifyOtpHandler, ...args),
-    getUserName,
+    getUserName: getUserNameHandler,
     getUser: updateUser,
   };
 }
