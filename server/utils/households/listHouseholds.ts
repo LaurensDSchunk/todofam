@@ -1,7 +1,7 @@
 import { H3Event } from "h3";
 import { getUserId } from "../auth/getUserId";
 
-export async function getHouseholds(event: H3Event) {
+export async function listHouseholds(event: H3Event) {
   const supabase = event.context.supabase;
 
   const userId = await getUserId(event);

@@ -8,6 +8,9 @@ const passwordRepeat = ref<string>("");
 
 const disabled = ref<boolean>(false);
 
+const router = useRouter();
+const auth = useAuth();
+
 async function signUp() {
   if (password.value != passwordRepeat.value) {
     alert("Passwords do not match");
@@ -16,66 +19,69 @@ async function signUp() {
 
   disabled.value = true;
 
-  const success = await useAuth().signUp(
+  const success = await auth.signUp(
     email.value,
     password.value,
     sanitizeName(name.value),
   );
 
   if (success) {
-    useRouter().replace(`/auth/verify?email=${email.value}`);
+    router.replace(`/auth/verify?email=${email.value}`);
   }
   disabled.value = false;
 }
 </script>
 
 <template>
-  <div id="sign-un-page-container">
-    <div id="sign-up-container">
-      <form @submit.prevent="signUp()" autocomplete="on">
-        <h1>Sign Up</h1>
+  <div class="h-full flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md m-4">
+      <form @submit.prevent="signUp()" autocomplete="on" class="space-y-6">
+        <h1 class="text-2xl font-semibold text-center">Sign Up</h1>
 
-        <label for="name-input">Name: </label>
-        <input
-          type="text"
+        <Input
+          id="name"
           name="name"
-          id="name-input"
+          label="Name"
           v-model="name"
           autocomplete="name"
           required
         />
 
-        <label for="email-input">Email:</label>
-        <input
-          id="email-input"
+        <Input
+          id="email"
           name="email"
           type="email"
-          autocomplete="email"
+          label="Email"
           v-model="email"
+          autocomplete="email"
           required
         />
 
-        <label for="password-input">Password:</label>
-        <input
-          id="password-input"
-          name="new-password"
+        <Input
+          id="password"
+          name="password"
           type="password"
-          autocomplete="new-password"
+          label="Password"
           v-model="password"
-          required
-        />
-
-        <label for="password-repeat-input">Re-Type Password:</label>
-        <input
-          id="password-repeat-input"
-          name="new-password-repeat"
-          type="password"
           autocomplete="new-password"
-          v-model="passwordRepeat"
           required
         />
 
-        <button :disabled="disabled" type="submit">Sign Up</button>
+        <Input
+          id="passwordRepeat"
+          name="passwordRepeat"
+          type="password"
+          label="Re-Type Password"
+          v-model="passwordRepeat"
+          autocomplete="new-password"
+          required
+        />
+
+        <div>
+          <Button :disabled="disabled" type="submit" class="w-full">
+            Sign Up
+          </Button>
+        </div>
       </form>
     </div>
   </div>

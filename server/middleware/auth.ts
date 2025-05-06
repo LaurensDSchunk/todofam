@@ -1,14 +1,21 @@
+/*
+ * This middleware prevents users from accessing pages from the wrong state
+ */
+
 import { getUser } from "../utils/auth/getUser";
 
 export default defineEventHandler(async (event) => {
   const path = event.path;
 
-  const unauthPaths = ["/auth/signin", "/auth/signup", "/auth/verify"];
+  const unauthPaths = ["/", "/auth/signin", "/auth/signup", "/auth/verify"];
 
-  if (path == "/about") {
-    const user = await getUser(event);
-    if (!user) {
-      return sendRedirect(event, "/");
-    }
+  const user = await getUser(event);
+
+  if (user && unauthPaths.includes(path)) {
+    return sendRedirect(event, "/dashboard");
+  }
+
+  if (!user && !unauthPaths.includes(path)) {
+    return sendRedirect(event, "/auth/signin");
   }
 });

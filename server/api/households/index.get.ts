@@ -1,5 +1,5 @@
-import { getHouseholds } from "../../utils/households/listHouseholds";
+import { listHouseholds } from "../../utils/households/listHouseholds";
 
 export default defineEventHandler(async (event) => {
-  return getHouseholds(event);
+  return listHouseholds(event);
 });

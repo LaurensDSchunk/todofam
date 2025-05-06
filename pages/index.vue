@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createHousehold } from "~/utils/api/households/createHousehold";
+import { deleteHousehold } from "~/utils/api/households/deleteHousehold";
 import { getHousehold } from "~/utils/api/households/getHousehold";
 import { listHouseholds } from "~/utils/api/households/listHouseholds";
 
@@ -24,6 +25,10 @@ async function getHouses() {
 
   house.value = houseRet;
 }
+
+async function deleteHouse() {
+  const { success } = await deleteHousehold(house.value.id);
+}
 </script>
 
 <template>
@@ -39,4 +44,5 @@ async function getHouses() {
 
   {{ house }}
   <button @click="getHouses()">Get House</button>
+  <button @click="deleteHouse()">del</button>
 </template>

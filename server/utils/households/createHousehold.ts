@@ -8,8 +8,6 @@ export async function createHousehold(event: H3Event, name: string) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("user", user);
-
   const userId = await getUserId(event);
 
   // Create a new household
@@ -20,7 +18,6 @@ export async function createHousehold(event: H3Event, name: string) {
     .single();
 
   if (createHouseholdError) {
-    console.log(createHouseholdError);
     throw createError({
       statusCode: 500,
       statusMessage:

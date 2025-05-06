@@ -4,11 +4,12 @@ const { user } = useAuth();
 
 <template>
   <div>
-    <div id="navbar">
-      {{ user?.user_metadata.name }}
-      <button @click="useAuth().signOut()" v-if="user != null">Sign Out</button>
+    <div class="flex flex-col min-h-screen">
+      <Navbar />
+      <NuxtRouteAnnouncer />
+      <main class="h-[calc(100vh-64px)]">
+        <NuxtPage />
+      </main>
     </div>
-    <NuxtRouteAnnouncer />
-    <NuxtPage />
   </div>
 </template>
