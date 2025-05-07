@@ -84,7 +84,7 @@ Deletes a task
 ## Invites Routes
 
 GET /invites
-returns: { invites }
+returns: { invites: Invite[] }
 Gets the user's pending invites
 
 POST /invites

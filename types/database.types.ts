@@ -101,6 +101,8 @@ export type Database = {
           household_id: string
           id: string
           recipient_email: string
+          recipient_id: string | null
+          status: Database["public"]["Enums"]["invitation status"]
         }
         Insert: {
           created_at?: string
@@ -108,6 +110,8 @@ export type Database = {
           household_id?: string
           id?: string
           recipient_email: string
+          recipient_id?: string | null
+          status?: Database["public"]["Enums"]["invitation status"]
         }
         Update: {
           created_at?: string
@@ -115,6 +119,8 @@ export type Database = {
           household_id?: string
           id?: string
           recipient_email?: string
+          recipient_id?: string | null
+          status?: Database["public"]["Enums"]["invitation status"]
         }
         Relationships: [
           {
@@ -129,6 +135,13 @@ export type Database = {
             columns: ["household_id"]
             isOneToOne: false
             referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invites_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -162,7 +175,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      "invitation status": "accepted" | "declined" | "pending"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -277,6 +290,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      "invitation status": ["accepted", "declined", "pending"],
+    },
   },
 } as const

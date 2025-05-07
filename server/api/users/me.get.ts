@@ -7,7 +7,7 @@ export default defineEventHandler(
     const { data, error } = await supabase
       .from("users")
       .select("name, id, email")
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       return { user: null };

@@ -6,7 +6,8 @@ export interface Invite {
   creatorName: string;
   creatorId: string;
 
-  recipientName: string;
+  recipientName: string; // The user's email if they have not registered
+  recipientId?: string;
 
   status: "Accepted" | "Declined" | "Pending";
 
