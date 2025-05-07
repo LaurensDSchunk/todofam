@@ -51,6 +51,7 @@ export default defineEventHandler(async (event) => {
     options: {
       data: {
         name: name,
+        email: email,
       },
     },
   });

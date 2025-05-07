@@ -94,19 +94,61 @@ export type Database = {
         }
         Relationships: []
       }
+      invites: {
+        Row: {
+          created_at: string
+          creator_id: string
+          household_id: string
+          id: string
+          recipient_email: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id?: string
+          household_id?: string
+          id?: string
+          recipient_email: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          household_id?: string
+          id?: string
+          recipient_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invites_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invites_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           created_at: string | null
+          email: string
           id: string
           name: string
         }
         Insert: {
           created_at?: string | null
+          email?: string
           id: string
           name: string
         }
         Update: {
           created_at?: string | null
+          email?: string
           id?: string
           name?: string
         }

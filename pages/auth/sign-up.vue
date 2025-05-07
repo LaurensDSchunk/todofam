@@ -42,7 +42,7 @@ async function signUp() {
 
         <Input
           id="name"
-          name="username"
+          name="name"
           label="Name"
           v-model="name"
           autocomplete="name"
@@ -51,7 +51,7 @@ async function signUp() {
 
         <Input
           id="email"
-          name="email"
+          name="username"
           type="email"
           label="Email"
           v-model="email"

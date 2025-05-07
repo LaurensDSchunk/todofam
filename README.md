@@ -27,9 +27,15 @@ POST /auth/sign-out
 returns { success: true }
 Signs the user out
 
-GET /auth/me
-returns: { user: User }
-Gets the user object.
+## User Routes
+
+GET /users/me
+returns { name, id }
+Gets the data or the current user
+
+GET /users/:userId
+returns { name, id }
+Gets the data of the user with id of userId
 
 ## Household Routes
 
@@ -83,7 +89,7 @@ Gets the user's pending invites
 
 POST /invites
 body: { houseId, recipientEmail?, recipientId? }
-returns: { success: true, inviteId }
+returns: { success: true }
 Creates an invite
 
 POST /invites/:inviteId/accept

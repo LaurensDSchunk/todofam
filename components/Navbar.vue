@@ -7,11 +7,11 @@ const auth = useAuth();
 const { user } = auth;
 
 watch(user, async (value) => {
-  userName.value = await useAuth().getUserName();
+  //userName.value = await useAuth().getUserName();
 });
 
 onMounted(async () => {
-  userName.value = await useAuth().getUserName();
+  //userName.value = await useAuth().getUserName();
 });
 
 async function signOut() {

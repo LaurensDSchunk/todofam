@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 
-export async function getUser(): Promise<User | null> {
+export async function getUser(): Promise<{ user: any | null }> {
   try {
     const res = await $fetch("/api/auth/me", {
       method: "GET",
@@ -10,6 +10,6 @@ export async function getUser(): Promise<User | null> {
     return res;
   } catch (e) {
     console.error(e);
-    return null;
+    return { user: null };
   }
 }
