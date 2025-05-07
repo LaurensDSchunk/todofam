@@ -11,6 +11,7 @@ import { validatePassword } from "~/utils/validation/password";
 import { validateName } from "~/utils/validation/name";
 
 import type { User } from "@supabase/supabase-js";
+import { apiRequest } from "~/utils/api/apiRequest";
 
 export function useAuth() {
   const user = useState<User | null>("auth-user", () => null);
