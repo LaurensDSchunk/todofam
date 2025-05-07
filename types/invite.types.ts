@@ -9,7 +9,7 @@ export interface Invite {
   recipientName: string; // The user's email if they have not registered
   recipientId?: string;
 
-  status: "Accepted" | "Declined" | "Pending";
+  status: "accepted" | "declined" | "pending";
 
   createdAt: string;
 }
