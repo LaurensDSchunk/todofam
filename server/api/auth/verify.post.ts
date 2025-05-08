@@ -1,42 +1,35 @@
-import type { verifyRequest } from "~/types/auth.types";
+import type { VerifyOtpRequest } from "~/types/auth.types";
+import { VerifyOtpRequestSchema } from "~/types/auth.types";
 
-import { validateEmail } from "~/utils/validation/email";
+export default defineEventHandler(
+  async (event): Promise<{ success: boolean }> => {
+    const supabase = event.context.supabase;
 
-export default defineEventHandler(async (event) => {
-  const supabase = event.context.supabase;
+    const body = await readBody<VerifyOtpRequest>(event);
+    const result = VerifyOtpRequestSchema.safeParse(body);
 
-  const body = await readBody<verifyRequest>(event);
-  const { token, email, type } = body;
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        message: "Invalid body",
+      });
+    }
 
-  const allowedTypes = ["signup"];
+    const { token, email, type } = result.data;
 
-  if (!token || !email || !type || !allowedTypes.includes(type)) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Invalid body",
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: type,
+      email: email,
+      token: String(token),
     });
-  }
 
-  const emailValidation = validateEmail(email);
-  if (!emailValidation.valid) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: emailValidation.errors![0],
-    });
-  }
+    if (error) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: error.message,
+      });
+    }
 
-  const { data, error } = await supabase.auth.verifyOtp({
-    type: type,
-    email: email,
-    token: String(token),
-  });
-
-  if (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message,
-    });
-  }
-
-  return { success: true };
-});
+    return { success: true };
+  },
+);

@@ -1,49 +1,34 @@
-import type { signInRequest } from "~/types/auth.types";
+import type { SignInRequest } from "~/types/auth.types";
+import { SignInRequestSchema } from "~/types/auth.types";
 
-import { validateEmail } from "~/utils/validation/email";
-import { validatePassword } from "~/utils/validation/password";
+export default defineEventHandler(
+  async (event): Promise<{ success: boolean }> => {
+    const supabase = event.context.supabase;
 
-export default defineEventHandler(async (event) => {
-  const supabase = event.context.supabase;
+    const body = await readBody<SignInRequest>(event);
+    const result = SignInRequestSchema.safeParse(body);
 
-  const body = await readBody<signInRequest>(event);
-  const { email, password } = body;
+    if (!result.success) {
+      throw createError({
+        statusCode: 400,
+        message: "Invalid body",
+      });
+    }
 
-  if (!email || !password) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Invalid arguments",
+    const { email, password } = result.data;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-  }
 
-  const emailValidation = validateEmail(email);
-  const passwordValidation = validatePassword(password);
+    if (error) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: error.message,
+      });
+    }
 
-  if (!emailValidation.valid) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: emailValidation.errors![0],
-    });
-  }
-
-  if (!passwordValidation.valid) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: passwordValidation.errors![0],
-    });
-  }
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message,
-    });
-  }
-
-  return { success: true };
-});
+    return { success: true };
+  },
+);

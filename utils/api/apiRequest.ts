@@ -6,7 +6,15 @@
 type RequestType = "GET" | "POST" | "PATCH" | "DELETE";
 
 type ApiSuccess<T = any> = { data: T; error?: undefined };
-type ApiError = { data?: undefined; error: any };
+type ApiError = {
+  data?: undefined;
+  error: {
+    message: string;
+    code?: string;
+    details?: any;
+  };
+};
+
 type ApiResponse<T = any> = ApiSuccess<T> | ApiError;
 
 export async function apiRequest<T = any>(
@@ -15,7 +23,7 @@ export async function apiRequest<T = any>(
   body: any = null,
 ): Promise<ApiResponse<T>> {
   try {
-    const res = await fetch(path, {
+    const res = await fetch("/api" + path, {
       method: type,
       headers: {
         ...(body != null && { "Content-Type": "application/json" }),
@@ -32,7 +40,13 @@ export async function apiRequest<T = any>(
 
     return { data: json };
   } catch (e) {
-    console.error(e);
-    return { error: e };
+    if (e instanceof Error) {
+      console.error(e.message);
+      return { error: { message: e.message } };
+    }
+
+    // Fallback in case the error isn't a known `Error` type
+    console.error("Unknown error", e);
+    return { error: { message: "Unknown error occurred" } };
   }
 }

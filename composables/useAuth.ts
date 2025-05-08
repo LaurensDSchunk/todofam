@@ -1,122 +1,115 @@
-import { signIn } from "~/utils/api/auth/signIn";
-import { signOut } from "~/utils/api/auth/signOut";
-import { signUp } from "~/utils/api/auth/signUp";
-import { verifyOtp } from "~/utils/api/auth/verifyOtp";
-import { getUser } from "~/utils/api/auth/getUser";
-import { getUserName } from "~/utils/api/auth/getUserName";
-
-import { sanitizeName } from "~/utils/sanitization/name";
-import { validateEmail } from "~/utils/validation/email";
-import { validatePassword } from "~/utils/validation/password";
-import { validateName } from "~/utils/validation/name";
-
-import type { User } from "@supabase/supabase-js";
+import type { User } from "~/types/auth.types";
+import {
+  SignInRequestSchema,
+  SignUpRequestSchema,
+  VerifyOtpRequestSchema,
+} from "~/types/auth.types";
 import { apiRequest } from "~/utils/api/apiRequest";
 
 export function useAuth() {
   const user = useState<User | null>("auth-user", () => null);
 
-  async function signUpHandler(email: string, password: string, name: string) {
-    name = sanitizeName(name);
-
-    const emailValidation = validateEmail(email);
-    const passwordValidation = validatePassword(password);
-    const nameValidation = validateName(name);
-
-    if (!nameValidation.valid) {
-      alert(nameValidation.errors![0]);
-      return false;
+  async function signIn(
+    email: string,
+    password: string,
+  ): Promise<{ success: boolean }> {
+    const result = SignInRequestSchema.safeParse({ email, password });
+    if (!result.success) {
+      alert(result.error.message);
+      return { success: false };
     }
 
-    if (!emailValidation.valid) {
-      alert(emailValidation.errors![0]);
-      return false;
-    }
-
-    if (!passwordValidation.valid) {
-      alert(passwordValidation.errors![0]);
-      return false;
-    }
-
-    const { error } = await signUp(email, password, name);
+    const { error } = await apiRequest("/auth/sign-in", "POST", result.data);
 
     if (error) {
-      alert(error);
-      return false;
+      alert(error.message);
+      return { success: false };
     }
 
-    return true;
+    return { success: true };
   }
 
-  async function signInHandler(email: string, password: string) {
-    const emailValidation = validateEmail(email);
-    const passwordValidation = validatePassword(password);
-
-    if (!emailValidation.valid) {
-      alert(emailValidation.errors![0]);
-      return false;
+  async function signUp(
+    email: string,
+    password: string,
+    name: string,
+  ): Promise<{ success: boolean }> {
+    const result = SignUpRequestSchema.safeParse({ email, password, name });
+    if (!result.success) {
+      alert(result.error.message);
+      return { success: false };
     }
 
-    if (!passwordValidation.valid) {
-      alert(passwordValidation.errors![0]);
-      return false;
-    }
-
-    const { error } = await signIn(email, password);
+    const { error } = await apiRequest("/auth/sign-up", "POST", result.data);
 
     if (error) {
-      alert(error);
-      return false;
+      alert(error.message);
+      return { success: false };
     }
 
-    return true;
+    return { success: true };
   }
 
-  async function signOutHandler() {
-    await signOut();
-  }
+  async function verifyOtp(
+    email: string,
+    token: string,
+    type: "signup",
+  ): Promise<{ success: boolean }> {
+    const result = VerifyOtpRequestSchema.safeParse({ email, token, type });
+    if (!result.success) {
+      alert(result.error.message);
+      return { success: false };
+    }
 
-  async function updateUser() {
-    const fetchedUser = await getUser();
-    user.value = fetchedUser;
-    return fetchedUser;
-  }
-
-  async function verifyOtpHandler(email: string, token: string, type: string) {
-    const { error } = await verifyOtp(email, token, type);
+    const { error } = await apiRequest("/auth/verify", "POST", result.data);
 
     if (error) {
-      alert(error);
-      return false;
+      alert(error.message);
+      return { success: false };
     }
 
-    return true;
+    return { success: true };
   }
 
-  async function getUserNameHandler() {
-    if (!user.value) {
-      return;
+  async function signOut(): Promise<{ success: boolean }> {
+    const { error } = await apiRequest("/auth/sign-out", "POST");
+
+    if (error) {
+      alert(error.message);
+      return { success: false };
     }
 
-    return await getUserName();
+    return { success: true };
   }
 
-  async function refreshUserAfter(
+  // Gets the user and fills the user state
+  async function getUser(): Promise<User | null> {
+    const { data, error } = await apiRequest<User | null>("/users/me", "GET");
+
+    if (error) {
+      alert(error.message);
+      return null;
+    }
+
+    user.value = data;
+    return data;
+  }
+
+  async function withUserRefresh(
     action: (...args: any[]) => Promise<any>,
     ...args: any[]
   ) {
     const result = await action(...args);
-    await updateUser();
+    await getUser();
     return result;
   }
 
   return {
     user,
-    signIn: (...args: any[]) => refreshUserAfter(signInHandler, ...args),
-    signOut: (...args: any[]) => refreshUserAfter(signOutHandler, ...args),
-    signUp: signUpHandler,
-    verifyOtp: (...args: any[]) => refreshUserAfter(verifyOtpHandler, ...args),
-    getUserName: getUserNameHandler,
-    getUser: updateUser,
+    signIn: (...args: any[]) => withUserRefresh(signIn, ...args),
+    signOut: (...args: any[]) => withUserRefresh(signOut, ...args),
+    signUp,
+    verifyOtp: (...args: any[]) => withUserRefresh(verifyOtp, ...args),
+    getUser,
   };
 }
