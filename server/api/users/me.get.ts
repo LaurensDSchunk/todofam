@@ -1,7 +1,7 @@
-import type { User } from "~/types/auth.types";
+import { type UserGetRouteInterface } from "~/types/api/users.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ user: User | null }> => {
+  async (event): Promise<UserGetRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
     const { data, error } = await supabase

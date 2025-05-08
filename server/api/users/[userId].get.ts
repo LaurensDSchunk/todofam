@@ -4,20 +4,15 @@
  * I'm not sure how to limit what can be queried through RLS so this is my solution to that.
  */
 
-import type { User } from "~/types/auth.types";
+import { readParam } from "~/server/utils/readParam";
+import { type UserGetRouteInterface } from "~/types/api/users.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ user: User | null }> => {
-    const userId = event.context.params?.userId;
-
-    if (!userId) {
-      throw createError({
-        statusCode: 400,
-        message: "No user id specified",
-      });
-    }
+  async (event): Promise<UserGetRouteInterface["response"]> => {
+    const userId = readParam(event, "userId");
 
     const currentUser = getUser(event);
+
     if (!currentUser) {
       throw createError({
         statusCode: 403,
@@ -29,7 +24,7 @@ export default defineEventHandler(
       .from("users")
       .select("name, id")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw createError({
