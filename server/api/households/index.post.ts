@@ -1,14 +1,14 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
-import { HouseholdSummary } from "~/types/household.types";
+import { parseBody } from "~/server/utils/parseBody";
+import {
+  HouseholdCreateRequestSchema,
+  HouseholdCreateRouteInterface,
+} from "~/types/api/household.types";
 
 export default defineEventHandler(
-  async (
-    event,
-  ): Promise<ApiSuccessResponse<{ household: HouseholdSummary }>> => {
+  async (event): Promise<HouseholdCreateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
-    const body = await readBody(event);
-    const { name } = body;
+    const { name } = await parseBody(event, HouseholdCreateRequestSchema);
 
     const userId = await getUserId(event);
 

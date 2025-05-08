@@ -1,34 +1,31 @@
-import { VerifyOtpRequestSchema } from "~/types/api/auth.types";
-import type { Routes } from "~/types/api/routes.types";
-type Route = Routes["/auth/verify"];
+import { parseBody } from "~/server/utils/parseBody";
+import {
+  VerifyOtpRequestSchema,
+  type VerifyRouteInterface,
+} from "~/types/api/auth.types";
 
-export default defineEventHandler(async (event): Promise<Route["response"]> => {
-  const supabase = event.context.supabase;
+export default defineEventHandler(
+  async (event): Promise<VerifyRouteInterface["response"]> => {
+    const supabase = event.context.supabase;
 
-  const body = await readBody<Route["request"]>(event);
-  const result = VerifyOtpRequestSchema.safeParse(body);
+    const { token, email, type } = await parseBody(
+      event,
+      VerifyOtpRequestSchema,
+    );
 
-  if (!result.success) {
-    throw createError({
-      statusCode: 400,
-      message: "Invalid body",
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: type,
+      email: email,
+      token: String(token),
     });
-  }
 
-  const { token, email, type } = result.data;
+    if (error) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: error.message,
+      });
+    }
 
-  const { data, error } = await supabase.auth.verifyOtp({
-    type: type,
-    email: email,
-    token: String(token),
-  });
-
-  if (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message,
-    });
-  }
-
-  return { success: true };
-});
+    return { success: true };
+  },
+);

@@ -1,3 +1,5 @@
+import { parseBody } from "~/server/utils/parseBody";
+
 import { SignInRequestSchema } from "~/types/api/auth.types";
 import type { SignInRouteInterface } from "~/types/api/auth.types";
 
@@ -5,17 +7,7 @@ export default defineEventHandler(
   async (event): Promise<SignInRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
-    const body = await readBody<SignInRouteInterface["request"]>(event);
-    const result = SignInRequestSchema.safeParse(body);
-
-    if (!result.success) {
-      throw createError({
-        statusCode: 400,
-        message: "Invalid body",
-      });
-    }
-
-    const { email, password } = result.data;
+    const { email, password } = await parseBody(event, SignInRequestSchema);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

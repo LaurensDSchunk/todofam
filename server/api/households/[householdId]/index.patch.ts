@@ -1,18 +1,18 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
-import { HouseholdUpdateRequest } from "~/types/household.types";
+import {
+  type HouseholdUpdateRouteInterface,
+  HouseholdUpdateRequestSchema,
+} from "~/types/api/household.types";
+
+import { parseBody } from "~/server/utils/parseBody";
+import { readParam } from "~/server/utils/readParam";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
+  async (event): Promise<HouseholdUpdateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
-    const id = event.context.params?.householdId;
-    if (!id) {
-      throw createError({ statusCode: 400, message: "Missing household ID" });
-    }
+    const id = readParam(event, "householdId");
 
-    const body = await readBody<HouseholdUpdateRequest>(event);
-
-    const { name } = body;
+    const { name } = await parseBody(event, HouseholdUpdateRequestSchema);
 
     if (name) {
       const { error } = await supabase

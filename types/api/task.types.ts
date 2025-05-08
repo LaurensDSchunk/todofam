@@ -1,0 +1,36 @@
+import { z } from "zod";
+import { type ApiSuccessResponse, type RouteInterface } from "./api.types";
+import {
+  TaskDescriptionSchema,
+  TaskTitleSchema,
+  type Task,
+} from "../task.types";
+
+export const TaskCreateRequestSchema = z.object({
+  title: TaskTitleSchema,
+  description: TaskDescriptionSchema.optional(),
+});
+export type TaskCreateRouteInterface = RouteInterface<
+  z.infer<typeof TaskCreateRequestSchema>,
+  ApiSuccessResponse
+>;
+
+export const TaskUpdateRequestSchema = z.object({
+  title: TaskTitleSchema.optional(),
+  description: TaskDescriptionSchema.optional(),
+  isCompleted: z.boolean().optional(),
+});
+export type TaskUpdateRouteInterface = RouteInterface<
+  z.infer<typeof TaskUpdateRequestSchema>,
+  ApiSuccessResponse
+>;
+
+export type TaskDeleteRouteInterface = RouteInterface<
+  undefined,
+  ApiSuccessResponse
+>;
+
+export type TaskListRouteInterface = RouteInterface<
+  undefined,
+  { tasks: Task[] }
+>;

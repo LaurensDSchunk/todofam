@@ -1,7 +1,7 @@
-import { HouseholdSummary } from "~/types/household.types";
+import type { HouseholdListRouteInterface } from "~/types/api/household.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ households: HouseholdSummary[] }> => {
+  async (event): Promise<HouseholdListRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
     const userId = await getUserId(event);

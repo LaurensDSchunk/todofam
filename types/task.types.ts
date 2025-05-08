@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface Task {
   id: string;
   title: string;
@@ -5,13 +7,5 @@ export interface Task {
   isCompleted: boolean;
 }
 
-export interface TaskCreateRequest {
-  title: string;
-  description?: string;
-}
-
-export interface TaskUpdateRequest {
-  title?: string;
-  description?: string;
-  isCompleted?: boolean;
-}
+export const TaskTitleSchema = z.string().min(1).max(100);
+export const TaskDescriptionSchema = z.string().min(0).max(500);

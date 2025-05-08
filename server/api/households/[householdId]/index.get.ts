@@ -1,13 +1,10 @@
-import type { Household } from "~/types/household.types";
-
+import { type HouseholdGetRouteInterface } from "~/types/api/household.types";
 import { getTasks } from "~/server/utils/households/getTasks";
+import { readParam } from "~/server/utils/readParam";
 
 export default defineEventHandler(
-  async (event): Promise<{ household: Household }> => {
-    const id = event.context.params?.householdId;
-    if (!id) {
-      throw createError({ statusCode: 400, message: "Missing household ID" });
-    }
+  async (event): Promise<HouseholdGetRouteInterface["response"]> => {
+    const id = readParam(event, "householdId");
 
     const supabase = event.context.supabase;
 

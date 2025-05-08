@@ -1,39 +1,36 @@
-import { SignUpRequestSchema } from "~/types/api/auth.types";
-import type { Routes } from "~/types/api/routes.types";
-type Route = Routes["/auth/sign-up"];
+import { parseBody } from "~/server/utils/parseBody";
+import {
+  SignUpRequestSchema,
+  type SignUpRouteInterface,
+} from "~/types/api/auth.types";
 
-export default defineEventHandler(async (event): Promise<Route["response"]> => {
-  const supabase = event.context.supabase;
+export default defineEventHandler(
+  async (event): Promise<SignUpRouteInterface["response"]> => {
+    const supabase = event.context.supabase;
 
-  const body = await readBody<Route["request"]>(event);
-  const result = SignUpRequestSchema.safeParse(body);
+    const { email, password, name } = await parseBody(
+      event,
+      SignUpRequestSchema,
+    );
 
-  if (!result.success) {
-    throw createError({
-      statusCode: 400,
-      message: "Invalid body",
-    });
-  }
-
-  const { email, password, name } = result.data;
-
-  const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        name: name,
-        email: email,
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: name,
+          email: email,
+        },
       },
-    },
-  });
-
-  if (error) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: error.message,
     });
-  }
 
-  return { success: true };
-});
+    if (error) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: error.message,
+      });
+    }
+
+    return { success: true };
+  },
+);

@@ -1,11 +1,9 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
+import { readParam } from "~/server/utils/readParam";
+import { type HouseholdDeleteRouteInterface } from "~/types/api/household.types";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
-    const id = event.context.params?.householdId;
-    if (!id) {
-      throw createError({ statusCode: 400, message: "Missing household ID" });
-    }
+  async (event): Promise<HouseholdDeleteRouteInterface["response"]> => {
+    const id = readParam(event, "householdId");
 
     const supabase = event.context.supabase;
 

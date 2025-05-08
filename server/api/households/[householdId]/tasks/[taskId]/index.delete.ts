@@ -1,18 +1,12 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
+import { readParam } from "~/server/utils/readParam";
+import { type TaskDeleteRouteInterface } from "~/types/api/task.types";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
-    const householdId = event.context.params?.householdId;
-    const taskId = event.context.params?.taskId;
-
-    if (!householdId || !taskId) {
-      throw createError({
-        statusCode: 400,
-        message: "Invalid params",
-      });
-    }
-
+  async (event): Promise<TaskDeleteRouteInterface["response"]> => {
     const supabase = event.context.supabase;
+
+    const householdId = readParam(event, "householdId");
+    const taskId = readParam(event, "taskId");
 
     const { error } = await supabase
       .from("household_tasks")

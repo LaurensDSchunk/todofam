@@ -1,22 +1,21 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
-import type { TaskUpdateRequest } from "~/types/task.types";
+import { parseBody } from "~/server/utils/parseBody";
+import { readParam } from "~/server/utils/readParam";
+import {
+  type TaskUpdateRouteInterface,
+  TaskUpdateRequestSchema,
+} from "~/types/api/task.types";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
-    const householdId = event.context.params?.householdId;
-    const taskId = event.context.params?.taskId;
-
-    if (!householdId || !taskId) {
-      throw createError({
-        statusCode: 400,
-        message: "Invalid params",
-      });
-    }
-
-    const body = await readBody<TaskUpdateRequest>(event);
-    const { title, description, isCompleted } = body;
-
+  async (event): Promise<TaskUpdateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
+
+    const householdId = readParam(event, "householdId");
+    const taskId = readParam(event, "taskId");
+
+    const { title, description, isCompleted } = await parseBody(
+      event,
+      TaskUpdateRequestSchema,
+    );
 
     const update = {
       ...(title !== undefined && { title }),
