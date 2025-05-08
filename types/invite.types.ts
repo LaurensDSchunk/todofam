@@ -13,8 +13,3 @@ export interface Invite {
 
   createdAt: string;
 }
-
-export interface InviteCreateRequest {
-  householdId: string;
-  recipientEmail: string;
-}

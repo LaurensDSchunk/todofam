@@ -1,16 +1,10 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
+import { readParam } from "~/server/utils/readParam";
+import { type InviteDeleteRouteInterface } from "~/types/api/invites.types";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
+  async (event): Promise<InviteDeleteRouteInterface["response"]> => {
     const supabase = event.context.supabase;
-    const inviteId = event.context.params?.inviteId;
-
-    if (!inviteId) {
-      throw createError({
-        statusCode: 400,
-        message: "No invite id defined",
-      });
-    }
+    const inviteId = readParam(event, "inviteId");
 
     const { error } = await supabase
       .from("invites")

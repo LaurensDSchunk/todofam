@@ -1,11 +1,17 @@
-import { ApiSuccessResponse } from "~/types/api/api.types";
-import { InviteCreateRequest } from "~/types/invite.types";
+import { parseBody } from "~/server/utils/parseBody";
+import {
+  InviteCreateRequestSchema,
+  type InviteCreateRouteInterface,
+} from "~/types/api/invites.types";
 
 export default defineEventHandler(
-  async (event): Promise<ApiSuccessResponse> => {
+  async (event): Promise<InviteCreateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
-    const body = await readBody<InviteCreateRequest>(event);
-    const { householdId, recipientEmail } = body;
+
+    const { householdId, recipientEmail } = await parseBody(
+      event,
+      InviteCreateRequestSchema,
+    );
 
     // Check to see if the recepient has an account
     const { data: recepient, error: reciepientError } = await supabaseAdmin

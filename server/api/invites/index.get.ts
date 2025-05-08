@@ -1,7 +1,8 @@
+import { type InviteListRouteInterface } from "~/types/api/invites.types";
 import type { Invite } from "~/types/invite.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ invites: Invite[] }> => {
+  async (event): Promise<InviteListRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
     const userId = await getUserId(event);
