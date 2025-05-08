@@ -1,10 +1,16 @@
 import type { User } from "~/types/auth.types";
+import type {
+  SignInRouteInterface,
+  SignUpRouteInterface,
+  VerifyRouteInterface,
+  SignOutRouteInterface,
+} from "~/types/api/auth.types";
 import {
   SignInRequestSchema,
   SignUpRequestSchema,
   VerifyOtpRequestSchema,
-} from "~/types/auth.types";
-import { apiRequest } from "~/utils/api/apiRequest";
+} from "~/types/api/auth.types";
+import { apiRequest, validatedApiRequest } from "~/utils/api/apiRequest";
 
 export function useAuth() {
   const user = useState<User | null>("auth-user", () => null);
@@ -13,13 +19,12 @@ export function useAuth() {
     email: string,
     password: string,
   ): Promise<{ success: boolean }> {
-    const result = SignInRequestSchema.safeParse({ email, password });
-    if (!result.success) {
-      alert(result.error.message);
-      return { success: false };
-    }
-
-    const { error } = await apiRequest("/auth/sign-in", "POST", result.data);
+    const { error } = await validatedApiRequest<SignInRouteInterface>(
+      "/auth/sign-in",
+      "POST",
+      SignInRequestSchema,
+      { email, password },
+    );
 
     if (error) {
       alert(error.message);
@@ -34,13 +39,12 @@ export function useAuth() {
     password: string,
     name: string,
   ): Promise<{ success: boolean }> {
-    const result = SignUpRequestSchema.safeParse({ email, password, name });
-    if (!result.success) {
-      alert(result.error.message);
-      return { success: false };
-    }
-
-    const { error } = await apiRequest("/auth/sign-up", "POST", result.data);
+    const { error } = await validatedApiRequest<SignUpRouteInterface>(
+      "/auth/sign-up",
+      "POST",
+      SignUpRequestSchema,
+      { email, name, password },
+    );
 
     if (error) {
       alert(error.message);
@@ -55,13 +59,12 @@ export function useAuth() {
     token: string,
     type: "signup",
   ): Promise<{ success: boolean }> {
-    const result = VerifyOtpRequestSchema.safeParse({ email, token, type });
-    if (!result.success) {
-      alert(result.error.message);
-      return { success: false };
-    }
-
-    const { error } = await apiRequest("/auth/verify", "POST", result.data);
+    const { error } = await validatedApiRequest<VerifyRouteInterface>(
+      "/auth/verify",
+      "POST",
+      VerifyOtpRequestSchema,
+      { email, token, type },
+    );
 
     if (error) {
       alert(error.message);

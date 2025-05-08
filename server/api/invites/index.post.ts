@@ -1,7 +1,8 @@
+import { ApiSuccessResponse } from "~/types/api/api.types";
 import { InviteCreateRequest } from "~/types/invite.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ success: boolean }> => {
+  async (event): Promise<ApiSuccessResponse> => {
     const supabase = event.context.supabase;
     const body = await readBody<InviteCreateRequest>(event);
     const { householdId, recipientEmail } = body;

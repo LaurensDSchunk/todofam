@@ -1,28 +1,32 @@
-export default defineEventHandler(async (event) => {
-  const householdId = event.context.params?.householdId;
-  const taskId = event.context.params?.taskId;
+import { ApiSuccessResponse } from "~/types/api/api.types";
 
-  if (!householdId || !taskId) {
-    throw createError({
-      statusCode: 400,
-      message: "Invalid params",
-    });
-  }
+export default defineEventHandler(
+  async (event): Promise<ApiSuccessResponse> => {
+    const householdId = event.context.params?.householdId;
+    const taskId = event.context.params?.taskId;
 
-  const supabase = event.context.supabase;
+    if (!householdId || !taskId) {
+      throw createError({
+        statusCode: 400,
+        message: "Invalid params",
+      });
+    }
 
-  const { error } = await supabase
-    .from("household_tasks")
-    .delete()
-    .eq("id", taskId)
-    .eq("household_id", householdId);
+    const supabase = event.context.supabase;
 
-  if (error) {
-    throw createError({
-      statusCode: 500,
-      message: error.message,
-    });
-  }
+    const { error } = await supabase
+      .from("household_tasks")
+      .delete()
+      .eq("id", taskId)
+      .eq("household_id", householdId);
 
-  return { success: true };
-});
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        message: error.message,
+      });
+    }
+
+    return { success: true };
+  },
+);

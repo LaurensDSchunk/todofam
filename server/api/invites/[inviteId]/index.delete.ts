@@ -1,22 +1,29 @@
-export default defineEventHandler(async (event) => {
-  const supabase = event.context.supabase;
-  const inviteId = event.context.params?.inviteId;
+import { ApiSuccessResponse } from "~/types/api/api.types";
 
-  if (!inviteId) {
-    throw createError({
-      statusCode: 400,
-      message: "No invite id defined",
-    });
-  }
+export default defineEventHandler(
+  async (event): Promise<ApiSuccessResponse> => {
+    const supabase = event.context.supabase;
+    const inviteId = event.context.params?.inviteId;
 
-  const { error } = await supabase.from("invites").delete().eq("id", inviteId);
+    if (!inviteId) {
+      throw createError({
+        statusCode: 400,
+        message: "No invite id defined",
+      });
+    }
 
-  if (error) {
-    throw createError({
-      statusCode: 500,
-      message: error.message,
-    });
-  }
+    const { error } = await supabase
+      .from("invites")
+      .delete()
+      .eq("id", inviteId);
 
-  return { success: true };
-});
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        message: error.message,
+      });
+    }
+
+    return { success: true };
+  },
+);

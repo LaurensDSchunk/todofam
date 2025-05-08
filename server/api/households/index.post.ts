@@ -1,7 +1,10 @@
+import { ApiSuccessResponse } from "~/types/api/api.types";
 import { HouseholdSummary } from "~/types/household.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ success: boolean; household: HouseholdSummary }> => {
+  async (
+    event,
+  ): Promise<ApiSuccessResponse<{ household: HouseholdSummary }>> => {
     const supabase = event.context.supabase;
 
     const body = await readBody(event);
@@ -43,6 +46,6 @@ export default defineEventHandler(
       });
     }
 
-    return { success: true, household: household };
+    return { success: true, data: { household: household } };
   },
 );

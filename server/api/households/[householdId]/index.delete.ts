@@ -1,19 +1,23 @@
-export default defineEventHandler(async (event) => {
-  const id = event.context.params?.householdId;
-  if (!id) {
-    throw createError({ statusCode: 400, message: "Missing household ID" });
-  }
+import { ApiSuccessResponse } from "~/types/api/api.types";
 
-  const supabase = event.context.supabase;
+export default defineEventHandler(
+  async (event): Promise<ApiSuccessResponse> => {
+    const id = event.context.params?.householdId;
+    if (!id) {
+      throw createError({ statusCode: 400, message: "Missing household ID" });
+    }
 
-  const { error } = await supabase.from("households").delete().eq("id", id);
+    const supabase = event.context.supabase;
 
-  if (error) {
-    throw createError({
-      statusCode: 500,
-      message: "Error deleting household",
-    });
-  }
+    const { error } = await supabase.from("households").delete().eq("id", id);
 
-  return { success: true };
-});
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        message: "Error deleting household",
+      });
+    }
+
+    return { success: true };
+  },
+);

@@ -1,11 +1,11 @@
-import type { SignInRequest } from "~/types/auth.types";
-import { SignInRequestSchema } from "~/types/auth.types";
+import { SignInRequestSchema } from "~/types/api/auth.types";
+import type { SignInRouteInterface } from "~/types/api/auth.types";
 
 export default defineEventHandler(
-  async (event): Promise<{ success: boolean }> => {
+  async (event): Promise<SignInRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
-    const body = await readBody<SignInRequest>(event);
+    const body = await readBody<SignInRouteInterface["request"]>(event);
     const result = SignInRequestSchema.safeParse(body);
 
     if (!result.success) {

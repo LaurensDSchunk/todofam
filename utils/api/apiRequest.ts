@@ -3,7 +3,10 @@
  * and returns the result or an error
  */
 
-type RequestType = "GET" | "POST" | "PATCH" | "DELETE";
+import type { ZodSchema, ZodTypeAny } from "zod";
+import type { RouteInterface } from "~/types/api/api.types";
+
+export type Method = "POST" | "PATCH" | "GET" | "DELETE";
 
 type ApiSuccess<T = any> = { data: T; error?: undefined };
 type ApiError = {
@@ -17,28 +20,32 @@ type ApiError = {
 
 type ApiResponse<T = any> = ApiSuccess<T> | ApiError;
 
-export async function apiRequest<T = any>(
+export async function apiRequest<T extends RouteInterface | unknown>(
   path: string,
-  type: RequestType,
-  body: any = null,
-): Promise<ApiResponse<T>> {
+  method: Method,
+  body?: T extends RouteInterface ? T["request"] : unknown,
+): Promise<ApiResponse<T extends RouteInterface ? T["response"] : T>> {
   try {
     const res = await fetch("/api" + path, {
-      method: type,
-      headers: {
-        ...(body != null && { "Content-Type": "application/json" }),
-      },
-      ...(body != null && { body: JSON.stringify(body) }),
+      method: method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
       credentials: "include",
     });
 
     const json = await res.json();
 
     if (!res.ok) {
-      return { error: json };
+      return {
+        error: {
+          message: json?.message || "Request failed",
+          code: json?.code,
+          details: json,
+        },
+      };
     }
 
-    return { data: json };
+    return { data: json.data };
   } catch (e) {
     if (e instanceof Error) {
       console.error(e.message);
@@ -49,4 +56,24 @@ export async function apiRequest<T = any>(
     console.error("Unknown error", e);
     return { error: { message: "Unknown error occurred" } };
   }
+}
+
+export async function validatedApiRequest<T extends RouteInterface | unknown>(
+  path: string,
+  method: Method,
+  schema: ZodSchema<T extends RouteInterface ? T["request"] : ZodTypeAny>,
+  body: T extends RouteInterface ? T["request"] : unknown,
+): Promise<ApiResponse<T extends RouteInterface ? T["response"] : T>> {
+  const result = schema.safeParse(body);
+
+  if (!result.success) {
+    return {
+      error: {
+        message: "Invalid request body",
+        details: result.error.flatten(),
+      },
+    };
+  }
+
+  return apiRequest(path, method, result.data);
 }
