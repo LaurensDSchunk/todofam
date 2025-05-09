@@ -89,15 +89,21 @@ export function useAuth() {
   }
 
   // Gets the user and fills the user state
-  async function getUser(): Promise<User | null> {
-    const { data, error } = await apiRequest<User | null>("/users/me", "GET");
+  async function getUser(id?: string): Promise<User | null> {
+    const { data, error } = await apiRequest<User | null>(
+      `/users/${id ? id : "me"}`,
+      "GET",
+    );
 
     if (error) {
       alert(error.message);
       return null;
     }
 
-    user.value = data;
+    if (!id) {
+      user.value = data;
+    }
+
     return data;
   }
 
