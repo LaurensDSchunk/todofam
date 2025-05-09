@@ -3,13 +3,12 @@ import { readParam } from "~/server/utils/readParam";
 import {
   type TaskUpdateRouteInterface,
   TaskUpdateRequestSchema,
-} from "~/types/api/task.types";
+} from "~/types/api/tasks.types";
 
 export default defineEventHandler(
   async (event): Promise<TaskUpdateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
 
-    const householdId = readParam(event, "householdId");
     const taskId = readParam(event, "taskId");
 
     const { title, description, isCompleted } = await parseBody(
@@ -26,8 +25,7 @@ export default defineEventHandler(
     const { data, error } = await supabase
       .from("household_tasks")
       .update(update)
-      .eq("id", taskId)
-      .eq("household_id", householdId);
+      .eq("id", taskId);
 
     if (error) {
       throw createError({

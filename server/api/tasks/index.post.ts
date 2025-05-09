@@ -3,13 +3,12 @@ import { readParam } from "~/server/utils/readParam";
 import {
   type TaskCreateRouteInterface,
   TaskCreateRequestSchema,
-} from "~/types/api/task.types";
+} from "~/types/api/tasks.types";
 
 export default defineEventHandler(
   async (event): Promise<TaskCreateRouteInterface["response"]> => {
     const supabase = event.context.supabase;
-    const householdId = readParam(event, "householdId");
-    const { title, description } = await parseBody(
+    const { title, description, householdId } = await parseBody(
       event,
       TaskCreateRequestSchema,
     );

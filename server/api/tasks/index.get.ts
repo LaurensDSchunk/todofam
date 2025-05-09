@@ -1,19 +1,34 @@
 import { readParam } from "~/server/utils/readParam";
-import { type TaskListRouteInterface } from "~/types/api/task.types";
+import { type TaskListRouteInterface } from "~/types/api/tasks.types";
 
 import { Task } from "~/types/task.types";
 
 export default defineEventHandler(
   async (event): Promise<TaskListRouteInterface["response"]> => {
-    const householdId = readParam(event, "householdId");
-    const taskId = readParam(event, "taskId");
-
     const supabase = event.context.supabase;
+
+    const userId = await getUserId(event);
+
+    // Get the households the user belongs to
+    const { data: households, error: householdsError } = await supabase
+      .from("household_members")
+      .select("household_id")
+      .eq("user_id", userId);
+
+    if (householdsError) {
+      throw createError({
+        statusCode: 500,
+        message: householdsError.message,
+      });
+    }
 
     const { data: tasks, error } = await supabase
       .from("household_tasks")
       .select()
-      .eq("household_id", householdId);
+      .in(
+        "household_id",
+        households.map((h) => h.household_id),
+      );
 
     if (error) {
       throw createError({

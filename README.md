@@ -61,23 +61,27 @@ DELETE /housholds/:householdId
 returns: { success: true }
 Deletes a household
 
-### Task Routes
-
-POST /households/:householdId/tasks
-body: { title, description? }
-returns: { success: true }
-Creates a new task
-
 GET /households/:householdId/tasks
-returns: { tasks: Task[] }
-Gets the tasks in the household
+returns { task: Task[] }
+Gets the tasks belonging to the household
 
-PATCH /households/:householdId/tasks/:taskId
+## Task Routes
+
+POST /tasks
+body: { title, description?, householdId }
+returns: { success: true }
+Creates a new task on a household
+
+GET /tasks
+returns: { tasks: Task[] }
+Returns all of the user's tasks
+
+PATCH /tasks/:taskId
 body: { title?, description?, isCompleted? }
 returns: { success: true }
 Updates a task
 
-DELETE /households/:householdId/tasks/:taskId
+DELETE /tasks/:taskId
 returns: { success: true }
 Deletes a task
 

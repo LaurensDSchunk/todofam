@@ -75,7 +75,10 @@ export function useAuth() {
   }
 
   async function signOut(): Promise<{ success: boolean }> {
-    const { error } = await apiRequest("/auth/sign-out", "POST");
+    const { error } = await apiRequest<SignOutRouteInterface>(
+      "/auth/sign-out",
+      "POST",
+    );
 
     if (error) {
       alert(error.message);

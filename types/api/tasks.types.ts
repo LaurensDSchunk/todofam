@@ -9,6 +9,7 @@ import {
 export const TaskCreateRequestSchema = z.object({
   title: TaskTitleSchema,
   description: TaskDescriptionSchema.optional(),
+  householdId: z.string().uuid(),
 });
 export type TaskCreateRouteInterface = RouteInterface<
   z.infer<typeof TaskCreateRequestSchema>,
