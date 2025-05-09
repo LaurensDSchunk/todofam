@@ -5,6 +5,7 @@ import {
   type HouseholdSummary,
 } from "../household.types";
 import type { ApiSuccessResponse, RouteInterface } from "./api.types";
+import type { Task } from "../task.types";
 
 export const HouseholdCreateRequestSchema = z.object({
   name: HouseholdNameSchema,
@@ -37,4 +38,9 @@ export type HouseholdGetRouteInterface = RouteInterface<
 export type HouseholdDeleteRouteInterface = RouteInterface<
   undefined,
   ApiSuccessResponse
+>;
+
+export type HouseholdGetTasksRouteInterface = RouteInterface<
+  undefined,
+  { tasks: Task[] }
 >;
