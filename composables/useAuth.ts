@@ -4,11 +4,13 @@ import type {
   SignUpRouteInterface,
   VerifyRouteInterface,
   SignOutRouteInterface,
+  ResendOtpRouteInterface,
 } from "~/types/api/auth.types";
 import {
   SignInRequestSchema,
   SignUpRequestSchema,
   VerifyOtpRequestSchema,
+  ResendOtpRequestSchema,
 } from "~/types/api/auth.types";
 import { apiRequest, validatedApiRequest } from "~/utils/api/apiRequest";
 
@@ -107,6 +109,25 @@ export function useAuth() {
     return data;
   }
 
+  async function resendOtp(
+    email: string,
+    type: "signup",
+  ): Promise<{ success: boolean }> {
+    const { error } = await validatedApiRequest<ResendOtpRouteInterface>(
+      "/auth/resend",
+      "POST",
+      ResendOtpRequestSchema,
+      { email, type },
+    );
+
+    if (error) {
+      alert(error.message);
+      return { success: false };
+    }
+
+    return { success: true };
+  }
+
   async function withUserRefresh(
     action: (...args: any[]) => Promise<any>,
     ...args: any[]
@@ -123,5 +144,6 @@ export function useAuth() {
     signUp,
     verifyOtp: (...args: any[]) => withUserRefresh(verifyOtp, ...args),
     getUser,
+    resendOtp,
   };
 }

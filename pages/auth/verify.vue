@@ -26,7 +26,9 @@ async function verify() {
   }
 }
 
-async function resend() {}
+async function resend() {
+  useAuth().resendOtp(email.value, "signup");
+}
 
 onMounted(() => {
   email.value = useRoute().query.email as string;

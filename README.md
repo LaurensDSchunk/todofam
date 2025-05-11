@@ -27,6 +27,11 @@ POST /auth/sign-out
 returns { success: true }
 Signs the user out
 
+POST /auth/resend
+body: { email, type }
+returns { success: true }
+Resends an OTP code
+
 ## User Routes
 
 GET /users/me

@@ -36,3 +36,12 @@ export type SignOutRouteInterface = RouteInterface<
   undefined,
   ApiSuccessResponse
 >;
+
+export const ResendOtpRequestSchema = z.object({
+  email: z.string().email(),
+  type: z.enum(["signup"]),
+});
+export type ResendOtpRouteInterface = RouteInterface<
+  z.infer<typeof ResendOtpRequestSchema>,
+  ApiSuccessResponse
+>;
