@@ -69,7 +69,7 @@ export async function validatedApiRequest<T extends RouteInterface | unknown>(
   if (!result.success) {
     return {
       error: {
-        message: "Invalid request body",
+        message: result.error.issues[0].message,
         details: result.error.flatten(),
       },
     };

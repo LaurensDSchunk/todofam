@@ -26,8 +26,6 @@ async function verify() {
   }
 }
 
-async function resend() {}
-
 onMounted(() => {
   email.value = useRoute().query.email as string;
 
@@ -61,9 +59,9 @@ onMounted(() => {
     >
       Verify
     </button>
+    <p class="text-sm">
+      Don't see the code?
+      <button type="button" class="link" @click="resend">Resend It.</button>
+    </p>
   </form>
-  <p class="text-sm text-center">
-    Don't see the code?
-    <button type="button" class="link" @click="resend">Resend It.</button>
-  </p>
 </template>

@@ -1,9 +1,12 @@
 <template>
   <div class="space-y-1">
-    <label :for="id" class="block text-sm font-medium text-gray-700">{{
-      label
-    }}</label>
+    <label :for="id" class="label">
+      {{ label }}
+    </label>
     <input
+      v-bind="$attrs"
+      class="input mb-0"
+      :class="{ '!border-destructive': error }"
       :id="id"
       :name="name"
       :type="type"
@@ -11,8 +14,8 @@
       v-model="modelValue"
       :required="required"
       :disabled="disabled"
-      class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
     />
+    <p v-if="error" class="text-destructive text-sm">{{ error }}</p>
   </div>
 </template>
 
@@ -33,6 +36,10 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  error: {
+    type: String,
+    required: false,
   },
 });
 

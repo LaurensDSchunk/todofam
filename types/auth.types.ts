@@ -3,8 +3,11 @@ import { z } from "zod";
 export const UserNameSchema = z
   .string()
   .trim()
-  .regex(/^[\p{L}][\p{L}\s'-]*[\p{L}]$/u, {
-    message: "Name can only contain letters, spaces, hyphens, and apostrophes.",
+  .regex(/^\p{L}(?:.*\p{L})?$/u, {
+    message: "Name must start and end with a letter.",
+  })
+  .regex(/^\p{L}[\p{L}\s'-]*\p{L}?$/u, {
+    message: "Name can only contain letter, spaces, apostrophes, or hyphens.",
   })
   .transform((arg: string) => {
     return arg

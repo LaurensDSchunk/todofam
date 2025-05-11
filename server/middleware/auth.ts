@@ -9,7 +9,8 @@ export default defineEventHandler(async (event) => {
 
   const unauthPaths = ["/", "/auth/sign-in", "/auth/sign-up", "/auth/verify"];
 
-  const user = await getUser(event);
+  const user = undefined;
+  //const user = await getUser(event);
 
   if (user && unauthPaths.includes(path)) {
     //return sendRedirect(event, "/dashboard");

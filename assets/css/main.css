@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #a47148;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #d3bfa6;
+  --color-secondary-foreground: #3b2f2f;
+  --color-accent: #6a4e42;
+  --color-accent-foreground: #ffffff;
+  --color-muted: #f5f5f4;
+  --color-muted-foreground: #6b7280;
+  --color-destructive: #b91c1c;
+  --color-destructive-foreground: #ffffff;
+  --color-background: #faf9f6;
+  --color-foreground: #1c1c1e;
+  --color-border: #e5e7eb;
+  --color-input: #f9fafb;
+  --color-ring: #c084fc;
+  --color-card: #fffdf9;
+  --color-card-foreground: #1c1c1e;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-default;
+}
+
+.btn-primary {
+  @apply bg-[#A47148] text-white hover:bg-[#8a5f3c];
+}
+
+.btn-secondary {
+  @apply bg-[#E0D6CD] text-[#3b2f2f] hover:bg-[#d1c4b4];
+}
+
+.btn-muted {
+  @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+}
+
+.btn-outline {
+  @apply border border-[#A47148] text-[#A47148] bg-transparent hover:bg-[#A47148] hover:text-white;
+}
+
+.btn-danger {
+  @apply bg-red-500 text-white hover:bg-red-600;
+}
+
+.label {
+  @apply block text-sm font-medium text-foreground;
+}
+
+.input {
+  @apply block w-full rounded-md border border-secondary outline-none px-2 py-0.5;
+}
+
+.card {
+  @apply bg-card text-card-foreground shadow-md w-max p-5 rounded-lg;
+}
+
+.link {
+  @apply text-ring;
+}

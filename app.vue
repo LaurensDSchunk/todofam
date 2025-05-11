@@ -6,8 +6,9 @@ const { user } = useAuth();
   <div>
     <Navbar />
     <NuxtRouteAnnouncer />
-    <main class="h-[calc(100vh-65px)]">
+
+    <NuxtLayout>
       <NuxtPage />
-    </main>
+    </NuxtLayout>
   </div>
 </template>
