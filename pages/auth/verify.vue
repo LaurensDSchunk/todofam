@@ -42,11 +42,13 @@ onMounted(() => {
 <template>
   <form
     @submit.prevent="verify"
-    class="flex flex-col justify-center items-center gap-3 max-w-2xs py-3 px-2"
+    class="flex flex-col justify-center items-center gap-3 max-w-3xs py-3 px-2"
   >
     <h1 class="text-center text-xl font-bold">Verify Email</h1>
 
-    <p class="text-center text-md">A code has been sent to {{ email }}</p>
+    <p class="text-center text-md max-w-[215px]">
+      A code has been sent to {{ email }}
+    </p>
 
     <Input
       label="Code"

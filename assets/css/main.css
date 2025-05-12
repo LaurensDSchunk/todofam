@@ -44,6 +44,10 @@ body {
   @apply border border-[#A47148] text-[#A47148] bg-transparent hover:bg-[#A47148] hover:text-white;
 }
 
+.btn-link {
+  @apply !cursor-pointer;
+}
+
 .btn-danger {
   @apply bg-red-500 text-white hover:bg-red-600;
 }
