@@ -6,6 +6,9 @@ import type {
   SignOutRouteInterface,
   ResendOtpRouteInterface,
 } from "~/types/api/auth.types";
+
+import type { UserGetRouteInterface } from "~/types/api/users.types";
+
 import {
   SignInRequestSchema,
   SignUpRequestSchema,
@@ -87,26 +90,28 @@ export function useAuth() {
       return { success: false };
     }
 
+    user.value = null;
+    useRouter().push("/");
     return { success: true };
   }
 
   // Gets the user and fills the user state
   async function getUser(id?: string): Promise<User | null> {
-    const { data, error } = await apiRequest<User | null>(
+    const { data, error } = await apiRequest<UserGetRouteInterface>(
       `/users/${id ? id : "me"}`,
       "GET",
     );
 
-    if (error) {
-      alert(error.message);
-      return null;
+    if (!data || error) {
+      user.value = null;
+    } else {
+      user.value = data.user;
+      if (user.value) {
+        useHouseholds().getHouseholds();
+      }
     }
 
-    if (!id) {
-      user.value = data;
-    }
-
-    return data;
+    return user.value;
   }
 
   async function resendOtp(
@@ -139,7 +144,8 @@ export function useAuth() {
 
   return {
     user,
-    signIn: (...args: any[]) => withUserRefresh(signIn, ...args),
+    signIn: (email: string, password: string) =>
+      withUserRefresh(signIn, email, password),
     signOut: (...args: any[]) => withUserRefresh(signOut, ...args),
     signUp,
     verifyOtp: (...args: any[]) => withUserRefresh(verifyOtp, ...args),

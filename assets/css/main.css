@@ -61,7 +61,7 @@ body {
 }
 
 .card {
-  @apply bg-card text-card-foreground shadow-md w-max p-5 rounded-lg;
+  @apply bg-card text-card-foreground shadow-md w-max p-5 rounded-lg border border-secondary;
 }
 
 .link {

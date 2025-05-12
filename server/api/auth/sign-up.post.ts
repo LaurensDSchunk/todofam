@@ -13,6 +13,20 @@ export default defineEventHandler(
       SignUpRequestSchema,
     );
 
+    const { data: account, error: accountError } = await supabase
+      .from("users")
+      .select()
+      .eq("email", email)
+      .maybeSingle();
+
+    if (account) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: "Conflict",
+        message: "Account already exists.",
+      });
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,

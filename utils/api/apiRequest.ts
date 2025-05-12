@@ -45,11 +45,11 @@ export async function apiRequest<T extends RouteInterface | unknown>(
       };
     }
 
-    return { data: json.data };
+    return { data: json };
   } catch (e) {
     if (e instanceof Error) {
       console.error(e.message);
-      return { error: { message: e.message } };
+      return { error: { message: path + method + e.message } };
     }
 
     // Fallback in case the error isn't a known `Error` type

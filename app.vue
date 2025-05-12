@@ -1,6 +1,4 @@
-<script setup lang="ts">
-const { user } = useAuth();
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>

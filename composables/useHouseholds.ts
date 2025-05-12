@@ -13,9 +13,18 @@ import {
 import type { Task } from "~/types/task.types";
 
 export function useHouseholds() {
-  async function getHouseholds(): Promise<{
-    households: HouseholdSummary[] | null;
-  }> {
+  const households = useState<HouseholdSummary[] | null>(
+    "household-summaries",
+    () => null,
+  );
+
+  const household = useState<Household | null>("household", () => null);
+  const householdCreateDialogOpen = useState<boolean>(
+    "household-dialog-open",
+    () => false,
+  );
+
+  async function getHouseholds(): Promise<HouseholdSummary[] | null> {
     const { data, error } = await apiRequest<HouseholdListRouteInterface>(
       "/households",
       "GET",
@@ -23,10 +32,12 @@ export function useHouseholds() {
 
     if (error) {
       alert(error.message);
-      return { households: null };
+      return null;
     }
 
-    return { households: data.households };
+    households.value = data.households;
+
+    return data.households;
   }
 
   async function createHousehold(name: string): Promise<{ success: boolean }> {
@@ -55,6 +66,8 @@ export function useHouseholds() {
       alert(error.message);
       return null;
     }
+
+    household.value = data.household;
 
     return data.household;
   }
@@ -107,6 +120,9 @@ export function useHouseholds() {
   }
 
   return {
+    households,
+    household,
+    householdCreateDialogOpen,
     getHouseholds,
     createHousehold,
     getHousehold,

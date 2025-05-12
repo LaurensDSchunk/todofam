@@ -6,7 +6,8 @@ export async function getUserId(event: H3Event) {
   if (!user) {
     throw createError({
       statusCode: 403,
-      statusMessage: "No user logged in",
+      statusMessage: "forbidden",
+      message: "No user logged in",
     });
   }
 
