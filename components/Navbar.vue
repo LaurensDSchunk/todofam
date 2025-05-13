@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue";
 const { user } = useAuth();
-const { households, householdCreateDialogOpen } = useHouseholds();
+const { households, household } = useHouseholds();
+const { householdCreateDialogOpen, householdSwitchDialogOpen } = useDialogs();
 
 const householdId = ref<string>();
 
 watch(householdId, (value) => {
   if (!value) return;
   if (!user.value) return;
+  if (!householdId.value) return;
 
-  useRouter().push("/dashboard/" + value);
+  useHouseholds().getHousehold(householdId.value);
 });
 
 watch(households, (value) => {
@@ -19,8 +22,6 @@ watch(households, (value) => {
 
   householdId.value = households.value[0].id;
 });
-
-onMounted(() => {});
 </script>
 
 <template>
@@ -40,15 +41,14 @@ onMounted(() => {});
 
     <!-- Navbar for auth users -->
     <ul v-else class="flex flex-row gap-3 items-center">
-      <select
-        v-if="households != null && households.length != 0"
-        v-model="householdId"
-        class="bg-muted"
+      <button
+        v-if="household != null"
+        @click="householdSwitchDialogOpen = true"
+        class="flex flex-row gap-0.5 items-center p-1 pl-2 rounded transition-colors hover:bg-muted"
       >
-        <option v-for="household of households" :value="household.id">
-          {{ household.name }}
-        </option>
-      </select>
+        {{ household.name }}
+        <Icon icon="lucide:chevrons-up-down" />
+      </button>
 
       <button
         v-else

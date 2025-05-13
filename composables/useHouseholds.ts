@@ -19,10 +19,6 @@ export function useHouseholds() {
   );
 
   const household = useState<Household | null>("household", () => null);
-  const householdCreateDialogOpen = useState<boolean>(
-    "household-dialog-open",
-    () => false,
-  );
 
   async function getHouseholds(): Promise<HouseholdSummary[] | null> {
     const { data, error } = await apiRequest<HouseholdListRouteInterface>(
@@ -40,20 +36,23 @@ export function useHouseholds() {
     return data.households;
   }
 
-  async function createHousehold(name: string): Promise<{ success: boolean }> {
-    const { error } = await validatedApiRequest<HouseholdCreateRouteInterface>(
-      "/households",
-      "POST",
-      HouseholdCreateRequestSchema,
-      { name },
-    );
+  async function createHousehold(
+    name: string,
+  ): Promise<{ success: boolean; household?: HouseholdSummary }> {
+    const { error, data } =
+      await validatedApiRequest<HouseholdCreateRouteInterface>(
+        "/households",
+        "POST",
+        HouseholdCreateRequestSchema,
+        { name },
+      );
 
     if (error) {
       alert(error.message);
       return { success: false };
     }
 
-    return { success: true };
+    return { success: true, household: data.data?.household };
   }
 
   async function getHousehold(id: string): Promise<Household | null> {
@@ -122,7 +121,6 @@ export function useHouseholds() {
   return {
     households,
     household,
-    householdCreateDialogOpen,
     getHouseholds,
     createHousehold,
     getHousehold,

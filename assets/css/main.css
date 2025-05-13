@@ -67,3 +67,8 @@ body {
 .link {
   @apply text-ring cursor-pointer;
 }
+
+.page {
+  min-height: calc(100dvh - 72px);
+  @apply p-3;
+}

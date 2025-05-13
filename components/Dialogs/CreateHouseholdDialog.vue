@@ -1,15 +1,23 @@
 <script setup lang="ts">
 const name = ref<string>("");
 
-const { householdCreateDialogOpen: open } = useHouseholds();
+const { householdCreateDialogOpen: open } = useDialogs();
 const disabled = ref<boolean>(false);
+
+watch(open, () => {
+  name.value = "";
+});
 
 async function createHousehold() {
   disabled.value = true;
 
-  const { success } = await useHouseholds().createHousehold(name.value);
+  const { success, household } = await useHouseholds().createHousehold(
+    name.value,
+  );
 
-  if (success) {
+  if (success && household) {
+    useHouseholds().getHousehold(household.id);
+    useHouseholds().getHouseholds();
     open.value = false;
   }
 

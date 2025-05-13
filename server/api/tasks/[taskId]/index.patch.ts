@@ -19,7 +19,7 @@ export default defineEventHandler(
     const update = {
       ...(title !== undefined && { title }),
       ...(description !== undefined && { description }),
-      ...(isCompleted !== undefined && { isCompleted }),
+      ...(isCompleted !== undefined && { is_completed: isCompleted }),
     };
 
     const { data, error } = await supabase

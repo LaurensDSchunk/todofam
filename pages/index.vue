@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-col justify-center items-center gap-5 min-h-[calc(100dvh-72px)]"
-  >
+  <div class="flex flex-col justify-center items-center gap-5 page">
     <div>
       <h1 class="text-5xl font-black text-primary text-center">To-Do Fam</h1>
       <p class="text-center text-lg">A Household Task Manager</p>

@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import { boolean } from "zod";
+
 defineProps({
   id: String,
   name: String,

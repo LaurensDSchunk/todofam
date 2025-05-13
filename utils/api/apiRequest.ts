@@ -45,6 +45,8 @@ export async function apiRequest<T extends RouteInterface | unknown>(
       };
     }
 
+    console.log(json);
+
     return { data: json };
   } catch (e) {
     if (e instanceof Error) {

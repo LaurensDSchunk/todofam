@@ -5,8 +5,12 @@
     <Navbar />
     <NuxtRouteAnnouncer />
 
-    <NuxtLayout class="min-h-[calc(100dvh-72px)]">
+    <NuxtLayout class="page">
       <NuxtPage />
     </NuxtLayout>
+
+    <DialogsCreateHouseholdDialog />
+    <DialogsSwitchHouseholdDialog />
+    <DialogsCreateTaskDialog />
   </div>
 </template>
