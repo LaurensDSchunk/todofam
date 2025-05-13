@@ -12,6 +12,26 @@ export default defineEventHandler(
 
     const userId = await getUserId(event);
 
+    // Get the user's households
+    const { data: households, error: householdsError } = await supabase
+      .from("households")
+      .select()
+      .eq("owner_id", userId);
+
+    if (householdsError) {
+      throw createError({
+        statusCode: 500,
+        message: householdsError.message,
+      });
+    }
+
+    if (households.length > 0) {
+      throw createError({
+        statusCode: 403,
+        message: "You can only have 1 household right now.",
+      });
+    }
+
     // Create a new household
     const { data: household, error: createHouseholdError } = await supabase
       .from("households")

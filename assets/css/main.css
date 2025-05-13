@@ -70,5 +70,5 @@ body {
 
 .page {
   min-height: calc(100dvh - 72px);
-  @apply p-3;
+  @apply px-3;
 }
