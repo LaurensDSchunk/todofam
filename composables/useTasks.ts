@@ -49,6 +49,18 @@ export function useTasks() {
   }
 
   async function deleteTask(taskId: string) {
+    const { household } = useHouseholds();
+    // If the current household contains the task, delete it on the user's side
+    const existingIndex = household.value?.tasks.findIndex(
+      (d) => d.id == taskId,
+    );
+    let deletedTask;
+    if (existingIndex) {
+      deletedTask = household.value?.tasks[existingIndex];
+
+      household.value?.tasks.splice(existingIndex, 1);
+    }
+
     const { error } = await apiRequest<TaskDeleteRouteInterface>(
       `/tasks/${taskId}`,
       "DELETE",
@@ -56,6 +68,10 @@ export function useTasks() {
 
     if (error) {
       alert(error.message);
+      if (deletedTask) {
+        household.value?.tasks.push(deletedTask);
+        household.value?.tasks.sort((a, b) => (a.sortOrder = b.sortOrder));
+      }
       return { success: false };
     }
 
