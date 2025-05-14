@@ -73,7 +73,7 @@ export function useTasks() {
       return null;
     }
 
-    return data.tasks;
+    return data.tasks.sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   return {

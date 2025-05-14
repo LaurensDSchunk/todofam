@@ -66,6 +66,7 @@ export function useHouseholds() {
       return null;
     }
 
+    data.household.tasks.sort((a, b) => a.sortOrder - b.sortOrder);
     household.value = data.household;
 
     return data.household;
@@ -115,7 +116,7 @@ export function useHouseholds() {
       return null;
     }
 
-    return data.tasks;
+    return data.tasks.sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   return {

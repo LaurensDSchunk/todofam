@@ -35,3 +35,8 @@ export type TaskListRouteInterface = RouteInterface<
   undefined,
   { tasks: Task[] }
 >;
+
+export type TaskOrderRouteInterface = RouteInterface<
+  { targetIndex: number },
+  ApiSuccessResponse
+>;

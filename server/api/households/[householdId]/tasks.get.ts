@@ -23,6 +23,7 @@ export default defineEventHandler(
         isCompleted: task.is_completed,
         description: task.description,
         title: task.title,
+        sortOrder: task.sort_order,
       })),
     };
   },

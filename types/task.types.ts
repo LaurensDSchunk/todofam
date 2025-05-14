@@ -5,6 +5,7 @@ export interface Task {
   title: string;
   description: string | null;
   isCompleted: boolean;
+  sortOrder: number;
 }
 
 export const TaskTitleSchema = z.string().min(1).max(100);

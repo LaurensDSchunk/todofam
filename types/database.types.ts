@@ -43,6 +43,7 @@ export type Database = {
           household_id: string
           id: string
           is_completed: boolean
+          sort_order: number
           title: string
         }
         Insert: {
@@ -52,6 +53,7 @@ export type Database = {
           household_id: string
           id?: string
           is_completed?: boolean
+          sort_order: number
           title: string
         }
         Update: {
@@ -61,6 +63,7 @@ export type Database = {
           household_id?: string
           id?: string
           is_completed?: boolean
+          sort_order?: number
           title?: string
         }
         Relationships: [
@@ -172,7 +175,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      bulk_update_tasks: {
+        Args: { input_tasks: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       "invitation status": "accepted" | "declined" | "pending"

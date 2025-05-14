@@ -59,11 +59,12 @@ watch(households, (value) => {
       </button>
 
       <!-- Avatar -->
-      <div
+      <button
+        @click="useAuth().signOut()"
         class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-medium select-none cursor-pointer"
       >
-        <button @click="useAuth().signOut()">{{ user.name[0] }}</button>
-      </div>
+        {{ user.name[0] }}
+      </button>
     </ul>
   </div>
 </template>

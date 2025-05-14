@@ -44,6 +44,7 @@ export default defineEventHandler(
           title: task.title,
           description: task.description,
           isCompleted: task.is_completed,
+          sortOrder: task.sort_order,
         }),
       ),
     };
