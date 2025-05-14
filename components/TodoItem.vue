@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 
+const { household } = useHouseholds();
+
 const props = defineProps({
   title: {
     type: String,
@@ -81,8 +83,34 @@ async function updateItem() {
     };
 
     useTasks().updateTask(props.id, update);
+  } else {
+    if (!household.value) return;
+    // New task
+
+    if (internalTitle.value.trim().length == 0) {
+      return;
+    }
+
+    // Creates a dummy
+    household.value.tasks.push({
+      title: internalTitle.value,
+      description: internalDescription.value,
+      sortOrder: Infinity,
+      id: "",
+      isCompleted: false,
+    });
+
+    useTasks().createTask(
+      household.value.id,
+      internalTitle.value,
+      internalDescription.value,
+    );
+
+    emit("created");
   }
 }
+
+const emit = defineEmits(["created"]);
 </script>
 
 <template>
@@ -136,7 +164,7 @@ async function updateItem() {
               isEditingTitle ||
               isEditingDescription
             "
-            class="text-sm break-words"
+            class="text-sm wrap-anywhere"
             :class="{
               'h-5 overflow-y-hidden': !isEditingDescription,
               'whitespace-pre-wrap': isEditingDescription,

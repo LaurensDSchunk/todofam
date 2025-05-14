@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { household, households } = useHouseholds();
 const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
+
+const creatingTask = ref<boolean>(false);
 </script>
 
 <template>
@@ -31,10 +33,14 @@ const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
         :id="task.id"
         v-model:completed="task.isCompleted"
       />
-      <button
-        class="btn btn-primary w-full"
-        @click="createTaskDialogOpen = true"
-      >
+      <!-- New task element -->
+      <TodoItem
+        v-if="creatingTask"
+        title=""
+        description=""
+        @created="creatingTask = false"
+      />
+      <button class="btn btn-primary w-full" @click="creatingTask = true">
         New Task
       </button>
     </div>

@@ -26,6 +26,13 @@ export function useTasks() {
       alert(error.message);
       return { success: false };
     }
+
+    const { household, getHousehold } = useHouseholds();
+
+    if (household.value) {
+      getHousehold(household.value.id);
+    }
+
     return { success: true, id: data.id };
   }
 
@@ -47,7 +54,8 @@ export function useTasks() {
 
     const { household, getHousehold } = useHouseholds();
 
-    if (household.value) {
+    // Update household as long as the update wasnt a completion
+    if (household.value && data.isCompleted == undefined) {
       getHousehold(household.value.id);
     }
 
@@ -56,12 +64,14 @@ export function useTasks() {
 
   async function deleteTask(taskId: string) {
     const { household } = useHouseholds();
+    if (!household.value) return;
     // If the current household contains the task, delete it on the user's side
-    const existingIndex = household.value?.tasks.findIndex(
+    const existingIndex = household.value.tasks.findIndex(
       (d) => d.id == taskId,
     );
     let deletedTask;
-    if (existingIndex) {
+
+    if (existingIndex != -1) {
       deletedTask = household.value?.tasks[existingIndex];
 
       household.value?.tasks.splice(existingIndex, 1);
