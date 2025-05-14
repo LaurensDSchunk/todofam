@@ -14,8 +14,8 @@ export function useTasks() {
     householdId: string,
     title: string,
     description?: string,
-  ): Promise<{ success: boolean }> {
-    const { error } = await validatedApiRequest<TaskCreateRouteInterface>(
+  ): Promise<{ success: boolean; id?: string }> {
+    const { error, data } = await validatedApiRequest<TaskCreateRouteInterface>(
       "/tasks",
       "POST",
       TaskCreateRequestSchema,
@@ -26,7 +26,7 @@ export function useTasks() {
       alert(error.message);
       return { success: false };
     }
-    return { success: true };
+    return { success: true, id: data.id };
   }
 
   async function updateTask(
@@ -43,6 +43,12 @@ export function useTasks() {
     if (error) {
       alert(error.message);
       return { success: false };
+    }
+
+    const { household, getHousehold } = useHouseholds();
+
+    if (household.value) {
+      getHousehold(household.value.id);
     }
 
     return { success: true };

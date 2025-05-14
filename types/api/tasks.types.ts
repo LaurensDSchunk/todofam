@@ -13,7 +13,7 @@ export const TaskCreateRequestSchema = z.object({
 });
 export type TaskCreateRouteInterface = RouteInterface<
   z.infer<typeof TaskCreateRequestSchema>,
-  ApiSuccessResponse
+  ApiSuccessResponse<{ id: string }>
 >;
 
 export const TaskUpdateRequestSchema = z.object({

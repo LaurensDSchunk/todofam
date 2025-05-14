@@ -59,7 +59,7 @@ export function useHouseholds() {
       return { success: false };
     }
 
-    return { success: true, household: data.data?.household };
+    return { success: true, household: data.household };
   }
 
   async function getHousehold(id: string): Promise<Household | null> {

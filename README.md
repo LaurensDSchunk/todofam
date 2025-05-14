@@ -122,3 +122,16 @@ npx supabase gen types typescript --project-id "rileakeebkisjoccyqee" --schema p
 ## Counting lines of code
 
 cloc components composables pages server utils app.vue assets middleware plugins
+
+## To-Do
+
+1. Task inline editing
+2. Task re-ordering
+3. Better household switch menu
+4. Avatar dropdown
+   a. Sign Out
+   b. Invites
+5. Household configuration
+   a. Re-name
+   b. Invites
+   c. Delete

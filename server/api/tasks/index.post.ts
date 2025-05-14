@@ -36,12 +36,16 @@ export default defineEventHandler(
 
     highest += 100;
 
-    const { data, error } = await supabase.from("household_tasks").insert({
-      household_id: householdId,
-      title: title,
-      description: description,
-      sort_order: highest,
-    });
+    const { data, error } = await supabase
+      .from("household_tasks")
+      .insert({
+        household_id: householdId,
+        title: title,
+        description: description,
+        sort_order: highest,
+      })
+      .select()
+      .single();
 
     if (error) {
       throw createError({
@@ -50,6 +54,6 @@ export default defineEventHandler(
       });
     }
 
-    return { success: true };
+    return { success: true, id: data.id };
   },
 );

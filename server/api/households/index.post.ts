@@ -66,6 +66,6 @@ export default defineEventHandler(
       });
     }
 
-    return { success: true, data: { household: household } };
+    return { success: true, household: household };
   },
 );

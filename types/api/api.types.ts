@@ -1,7 +1,6 @@
-export type ApiSuccessResponse<T = undefined> = {
+export type ApiSuccessResponse<T extends object = {}> = {
   success: true;
-  data?: T;
-};
+} & Omit<T, "success">;
 
 export interface RouteInterface<Req = unknown, Res = unknown> {
   request: Req;

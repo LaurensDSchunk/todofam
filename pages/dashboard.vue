@@ -4,7 +4,7 @@ const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
 </script>
 
 <template>
-  <div class="w-full flex flex-col page max-w-lg mx-auto">
+  <div class="flex flex-col page max-w-lg w-full mx-auto">
     <!-- Skeleton display for loading -->
     <div v-if="households === undefined"></div>
 
