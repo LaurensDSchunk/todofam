@@ -18,7 +18,8 @@ import {
 import { apiRequest, validatedApiRequest } from "~/utils/api/apiRequest";
 
 export function useAuth() {
-  const user = useState<User | null>("auth-user", () => null);
+  // Undefined means loading, null means no user exists
+  const user = useState<User | undefined | null>("auth-user", () => undefined);
 
   async function signIn(
     email: string,
@@ -91,6 +92,8 @@ export function useAuth() {
     }
 
     user.value = null;
+    useHouseholds().household.value = undefined;
+
     useRouter().push("/");
     return { success: true };
   }

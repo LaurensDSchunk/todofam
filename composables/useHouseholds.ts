@@ -13,12 +13,15 @@ import {
 import type { Task } from "~/types/task.types";
 
 export function useHouseholds() {
-  const households = useState<HouseholdSummary[] | null>(
+  const households = useState<HouseholdSummary[] | undefined>(
     "household-summaries",
-    () => null,
+    () => undefined,
   );
 
-  const household = useState<Household | null>("household", () => null);
+  const household = useState<Household | undefined | null>(
+    "household",
+    () => undefined,
+  );
 
   async function getHouseholds(): Promise<HouseholdSummary[] | null> {
     const { data, error } = await apiRequest<HouseholdListRouteInterface>(
@@ -32,6 +35,10 @@ export function useHouseholds() {
     }
 
     households.value = data.households;
+
+    if (data.households.length == 0) {
+      household.value = null;
+    }
 
     return data.households;
   }

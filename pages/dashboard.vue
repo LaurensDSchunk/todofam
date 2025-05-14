@@ -5,9 +5,13 @@ const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
 
 <template>
   <div class="w-full flex flex-col page max-w-lg mx-auto">
+    <!-- Skeleton display for loading -->
+    <div v-if="households === undefined"></div>
+
     <!-- Display for if user has no households -->
     <div
-      v-if="!households || households.length == 0"
+      v-else
+      v-if="households.length == 0"
       class="flex flex-col items-center justify-center page gap-3"
     >
       <h2>You Don't Have Any Households</h2>
@@ -18,7 +22,7 @@ const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
 
     <!-- Normal display -->
     <div v-if="household" class="flex flex-col gap-2">
-      <h1 class="text-3xl font-bold m-2">{{ household.name }}</h1>
+      <h1 class="text-3xl font-bold my-2">{{ household.name }}</h1>
 
       <TodoItem
         v-for="task of household.tasks"

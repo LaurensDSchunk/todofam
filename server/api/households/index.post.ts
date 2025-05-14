@@ -25,10 +25,10 @@ export default defineEventHandler(
       });
     }
 
-    if (households.length > 0) {
+    if (households.length > 1) {
       throw createError({
         statusCode: 403,
-        message: "You can only have 1 household right now.",
+        message: "You can only have 2 households right now.",
       });
     }
 

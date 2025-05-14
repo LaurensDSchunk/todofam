@@ -29,8 +29,13 @@ watch(households, (value) => {
     class="bg-card text-card-foreground shadow-md m-2 rounded-lg border border-secondary p-2 flex flex-row justify-between items-center px-3"
   >
     <NuxtLink class="text-xl font-bold text-primary" to="/">To-Do Fam</NuxtLink>
+    <!-- Navbar for loading -->
+    <ul v-if="user === undefined">
+      Loading...
+    </ul>
+
     <!-- Navbar for unauth users -->
-    <ul class="flex flex-row gap-3 items-center" v-if="!user">
+    <ul class="flex flex-row gap-3 items-center" v-if="user === null">
       <li>
         <NuxtLink to="/auth/sign-in" class="btn btn-outline">Sign In</NuxtLink>
       </li>
@@ -40,9 +45,13 @@ watch(households, (value) => {
     </ul>
 
     <!-- Navbar for auth users -->
-    <ul v-else class="flex flex-row gap-3 items-center">
+    <ul
+      v-else
+      v-if="user != null && user != undefined"
+      class="flex flex-row gap-3 items-center"
+    >
       <button
-        v-if="household != null"
+        v-if="household != undefined"
         @click="householdSwitchDialogOpen = true"
         class="flex flex-row gap-0.5 items-center p-1 pl-2 rounded transition-colors hover:bg-muted"
       >
@@ -52,6 +61,7 @@ watch(households, (value) => {
 
       <button
         v-else
+        v-if="household === null"
         class="btn btn-primary"
         @click="householdCreateDialogOpen = true"
       >

@@ -23,7 +23,7 @@ async function check() {
   <div
     class="flex flex-row gap-3 items-center p-2 border border-secondary rounded-lg"
   >
-    <button @click="check">
+    <button @click="check" class="cursor-pointer">
       <svg
         v-if="!isCompleted"
         class="text-secondary w-5.5 h-5.5"
