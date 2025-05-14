@@ -56,7 +56,7 @@ function leaveTitle() {
   setTimeout(async () => {
     isEditingTitle.value = false;
 
-    setTimeout(updateItem, 50);
+    setTimeout(updateItem, 20);
   }, 20);
 }
 
@@ -66,13 +66,18 @@ function leaveDescription() {
   let text: string = descriptionEditor.value.innerText.trim();
 
   internalDescription.value = text;
-  setTimeout(updateItem, 50);
+  setTimeout(updateItem, 20);
 }
 
 async function updateItem() {
   if (isEditingDescription.value || isEditingTitle.value) return;
 
   if (props.id) {
+    if (internalTitle.value.trim().length == 0) {
+      internalTitle.value = props.title;
+      return;
+    }
+
     const update = {
       ...(internalDescription.value != props.description && {
         description: internalDescription.value,
@@ -115,11 +120,11 @@ const emit = defineEmits(["created"]);
 
 <template>
   <div
-    class="flex flex-row justify-between items-center border border-secondary rounded-lg p-2"
+    class="flex flex-row justify-between items-center border border-secondary rounded-lg p-2 w-full"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
   >
-    <div class="flex flex-row gap-3 items-center">
+    <div class="flex flex-row gap-3 items-center w-full">
       <button @click="changeCompletion()" class="cursor-pointer">
         <svg
           v-if="!isCompleted"
@@ -149,25 +154,33 @@ const emit = defineEmits(["created"]);
           <circle cx="12" cy="12" r="5" fill="currentColor" stroke="none" />
         </svg>
       </button>
-      <div class="flex flex-col gap-0">
+      <div class="flex flex-col gap-0 w-full">
         <input
           type="text"
-          class="font-medium"
+          class="font-medium outline-none border border-transparent"
+          :class="{
+            'border-b-secondary':
+              internalTitle.trim().length == 0 ||
+              isEditingTitle ||
+              isEditingDescription,
+          }"
           v-model="internalTitle"
           @focus="isEditingTitle = true"
           @blur="leaveTitle()"
         />
-        <div class="relative">
+        <div class="">
           <p
             v-if="
               internalDescription.length != 0 ||
               isEditingTitle ||
               isEditingDescription
             "
-            class="text-sm wrap-anywhere"
+            class="text-sm wrap-anywhere outline-none border border-transparent"
             :class="{
               'h-5 overflow-y-hidden': !isEditingDescription,
               'whitespace-pre-wrap': isEditingDescription,
+              'border-b-secondary':
+                internalDescription.trim().length == 0 || isEditingDescription,
             }"
             ref="descriptionEditor"
             contenteditable
@@ -185,8 +198,8 @@ const emit = defineEmits(["created"]);
     <div>
       <Icon
         icon="lucide:trash"
-        v-if="isHovered"
-        class="text-secondary cursor-pointer"
+        class="text-secondary cursor-pointer ml-2"
+        :class="{ 'text-transparent': !isHovered }"
         @click="if (id) useTasks().deleteTask(id);"
       />
     </div>

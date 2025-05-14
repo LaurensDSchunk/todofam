@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { household, households } = useHouseholds();
-const { householdCreateDialogOpen, createTaskDialogOpen } = useDialogs();
+const { householdCreateDialogOpen } = useDialogs();
 
 const creatingTask = ref<boolean>(false);
 </script>
