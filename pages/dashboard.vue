@@ -3,6 +3,27 @@ const { household, households } = useHouseholds();
 const { householdCreateDialogOpen } = useDialogs();
 
 const creatingTask = ref<boolean>(false);
+
+async function reorderTask(id: string, up: boolean) {
+  if (!household.value) return;
+
+  const currentIndex = household.value.tasks.findIndex((t) => t.id == id);
+
+  if (currentIndex == -1) return;
+  if (up && currentIndex == 0) return;
+  if (!up && currentIndex == household.value.tasks.length - 1) return;
+
+  const targetIndex = currentIndex + (up ? -1 : 1);
+  console.log(targetIndex);
+  const task = household.value.tasks[currentIndex];
+
+  const { success } = await useTasks().orderTask(id, targetIndex);
+  await useHouseholds().getHousehold(household.value.id);
+
+  if (!success) {
+    // Revert change
+  }
+}
 </script>
 
 <template>
@@ -32,14 +53,19 @@ const creatingTask = ref<boolean>(false);
         :description="task.description || undefined"
         :id="task.id"
         v-model:completed="task.isCompleted"
+        @moveup="reorderTask(task.id, true)"
+        @movedown="reorderTask(task.id, false)"
       />
+
       <!-- New task element -->
       <TodoItem
         v-if="creatingTask"
         title=""
         description=""
-        @created="creatingTask = false"
+        ref="newItem"
+        @deleteme="creatingTask = false"
       />
+
       <button class="btn btn-primary w-full" @click="creatingTask = true">
         New Task
       </button>

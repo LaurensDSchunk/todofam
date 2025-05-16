@@ -17,6 +17,8 @@ const props = defineProps({
     required: false,
   },
 });
+const root = ref<HTMLElement | null>(null);
+defineExpose({ root });
 
 const isCompleted = defineModel<boolean>("completed");
 const isHovered = ref<boolean>(false);
@@ -27,14 +29,15 @@ const internalDescription = ref<string>(props.description || "");
 const isEditingTitle = ref<boolean>(false);
 const isEditingDescription = ref<boolean>(false);
 const descriptionEditor = ref<HTMLElement | null>(null);
+const titleInput = ref<HTMLInputElement | null>(null);
 
+// Update the internal title and description when the prop changes
 watch(
   () => props.title,
   (value) => {
     internalTitle.value = value;
   },
 );
-
 watch(
   () => props.description,
   (value) => {
@@ -43,6 +46,7 @@ watch(
   },
 );
 
+// Check off or un-check an item
 async function changeCompletion() {
   if (!props.id) return;
   const value = !isCompleted.value;
@@ -61,6 +65,8 @@ function leaveTitle() {
 }
 
 function leaveDescription() {
+  isEditingDescription.value = false;
+
   if (!descriptionEditor.value) return;
 
   let text: string = descriptionEditor.value.innerText.trim();
@@ -69,6 +75,8 @@ function leaveDescription() {
   setTimeout(updateItem, 20);
 }
 
+// Updates or creates a task. If creating,
+// makes a dummy and signals for the component to be deleted
 async function updateItem() {
   if (isEditingDescription.value || isEditingTitle.value) return;
 
@@ -78,14 +86,20 @@ async function updateItem() {
       return;
     }
 
+    const descriptionUpdate =
+      internalDescription.value.trim() != props.description &&
+      internalDescription.value.trim().length != 0;
+
     const update = {
-      ...(internalDescription.value != props.description && {
-        description: internalDescription.value,
+      ...(descriptionUpdate && {
+        description: internalDescription.value.trim(),
       }),
       ...(internalTitle.value != props.title && {
-        title: internalTitle.value,
+        title: internalTitle.value.trim(),
       }),
     };
+
+    if (!update.title && !update.description) return;
 
     useTasks().updateTask(props.id, update);
   } else {
@@ -111,20 +125,37 @@ async function updateItem() {
       internalDescription.value,
     );
 
-    emit("created");
+    emit("deleteme");
   }
 }
 
-const emit = defineEmits(["created"]);
+const emit = defineEmits(["deleteme", "moveup", "movedown"]);
 </script>
 
 <template>
   <div
-    class="flex flex-row justify-between items-center border border-secondary rounded-lg p-2 w-full"
+    class="flex flex-row justify-between items-center border border-secondary rounded-lg p-1.5 w-full"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
+    ref="root"
+    v-bind="$attrs"
   >
-    <div class="flex flex-row gap-3 items-center w-full">
+    <div class="flex flex-col justify-center items-center gap-0.5">
+      <div @click="$emit('moveup')">
+        <Icon
+          icon="lucide:arrow-up"
+          class="w-4 h-4 text-secondary mr-1 shrink-0 select-none cursor-pointer"
+        />
+      </div>
+      <div @click="$emit('movedown')">
+        <Icon
+          icon="lucide:arrow-down"
+          class="w-4 h-4 text-secondary mr-1 shrink-0 select-none cursor-pointer"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-2 items-center w-full">
       <button @click="changeCompletion()" class="cursor-pointer">
         <svg
           v-if="!isCompleted"
@@ -154,10 +185,11 @@ const emit = defineEmits(["created"]);
           <circle cx="12" cy="12" r="5" fill="currentColor" stroke="none" />
         </svg>
       </button>
-      <div class="flex flex-col gap-0 w-full">
+      <div class="flex flex-col gap-0 min-w-0 w-full">
         <input
           type="text"
-          class="font-medium outline-none border border-transparent"
+          ref="titleInput"
+          class="font-medium outline-none border border-transparent min-w-0"
           :class="{
             'border-b-secondary':
               internalTitle.trim().length == 0 ||
@@ -180,27 +212,32 @@ const emit = defineEmits(["created"]);
               'h-5 overflow-y-hidden': !isEditingDescription,
               'whitespace-pre-wrap': isEditingDescription,
               'border-b-secondary':
-                internalDescription.trim().length == 0 || isEditingDescription,
+                internalDescription.trim().length == 0 ||
+                isEditingDescription ||
+                isEditingTitle,
             }"
             ref="descriptionEditor"
             contenteditable
             @focus="isEditingDescription = true"
-            @blur="
-              leaveDescription();
-              isEditingDescription = false;
-            "
+            @blur="leaveDescription()"
           >
             {{ internalDescription }}
           </p>
         </div>
       </div>
     </div>
-    <div>
+    <div class="flex flex-row gap-3">
       <Icon
         icon="lucide:trash"
         class="text-secondary cursor-pointer ml-2"
         :class="{ 'text-transparent': !isHovered }"
-        @click="if (id) useTasks().deleteTask(id);"
+        @click="
+          if (id && isHovered) {
+            useTasks().deleteTask(id);
+          } else {
+            $emit('deleteme');
+          }
+        "
       />
     </div>
   </div>

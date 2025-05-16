@@ -1,7 +1,7 @@
 import type { TaskOrderRouteInterface } from "~/types/api/tasks.types";
 
 // This function inserts the item into the list, then removes the old one.
-// Inserting to index 0 means front of the list. Inserting into tasks.length means the end
+// Inserting to index 0 means front of the list. Inserting into tasks.length - 1 means the end
 
 export default defineEventHandler(
   async (event): Promise<TaskOrderRouteInterface["response"]> => {
@@ -48,7 +48,7 @@ export default defineEventHandler(
     }
 
     // Inserting to the end
-    if (targetIndex == tasks.length) {
+    if (targetIndex == tasks.length - 1) {
       await supabase
         .from("household_tasks")
         .update({ sort_order: tasks[tasks.length - 1].sort_order + 100 })
@@ -56,15 +56,17 @@ export default defineEventHandler(
       return { success: true };
     }
 
-    let next,
-      previous = 0;
+    let next, // Neighbor with higher index
+      previous = 0; // Neighbor with lower index
 
     if (targetIndex != 0) {
       previous = tasks[targetIndex - 1].sort_order;
     }
     next = tasks[targetIndex].sort_order;
+    console.log(tasks);
 
     let insertPos = Math.floor((previous + next) / 2);
+    console.log(insertPos);
 
     // Shift the next elements
     if (insertPos == next || insertPos == previous) {

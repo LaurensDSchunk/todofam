@@ -5,6 +5,7 @@ import {
   type TaskDeleteRouteInterface,
   type TaskListRouteInterface,
   type TaskUpdateRouteInterface,
+  type TaskOrderRouteInterface,
 } from "~/types/api/tasks.types";
 import type { Task } from "~/types/task.types";
 import { apiRequest, validatedApiRequest } from "~/utils/api/apiRequest";
@@ -108,10 +109,29 @@ export function useTasks() {
     return data.tasks.sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
+  async function orderTask(
+    id: string,
+    index: number,
+  ): Promise<{ success: boolean }> {
+    const { data, error } = await apiRequest<TaskOrderRouteInterface>(
+      `/tasks/${id}/order`,
+      "PATCH",
+      { targetIndex: index },
+    );
+
+    if (error) {
+      alert(error.message);
+      return { success: false };
+    }
+
+    return { success: true };
+  }
+
   return {
     createTask,
     updateTask,
     deleteTask,
     getTasks,
+    orderTask,
   };
 }
