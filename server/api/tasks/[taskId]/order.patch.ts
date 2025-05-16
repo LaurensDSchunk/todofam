@@ -38,6 +38,18 @@ export default defineEventHandler(
 
     // Sort the tasks and remove the task to move from it.
     const tasks = rawTasks.sort((a, b) => a.sort_order - b.sort_order);
+    const currentIndex = tasks.findIndex((d) => d.id == taskId);
+
+    if (currentIndex == -1) {
+      throw createError({
+        statusCode: 400,
+        message: "Task does not exist on household",
+      });
+    }
+
+    if (currentIndex == targetIndex) {
+      return { success: true };
+    }
 
     // Check that the target index is in range
     if (targetIndex < 0 || targetIndex > tasks.length) {
@@ -47,42 +59,30 @@ export default defineEventHandler(
       });
     }
 
-    // Inserting to the end
-    if (targetIndex == tasks.length - 1) {
-      await supabase
-        .from("household_tasks")
-        .update({ sort_order: tasks[tasks.length - 1].sort_order + 100 })
-        .eq("id", taskId);
-      return { success: true };
-    }
+    /* Yes, I know that this is inneficient, but if it works, it works */
+    const newTasks = [...tasks];
+    const [item] = newTasks.splice(currentIndex, 1);
+    newTasks.splice(targetIndex, 0, item);
 
-    let next, // Neighbor with higher index
-      previous = 0; // Neighbor with lower index
+    const updatedTasks = newTasks.filter((d, i) => {
+      return tasks.findIndex((p) => p.id == d.id) != i;
+    });
 
-    if (targetIndex != 0) {
-      previous = tasks[targetIndex - 1].sort_order;
-    }
-    next = tasks[targetIndex].sort_order;
-    console.log(tasks);
+    const update = updatedTasks.map((task, i) => ({
+      id: task.id,
+      sort_order: newTasks.findIndex((p) => p.id == task.id),
+    }));
 
-    let insertPos = Math.floor((previous + next) / 2);
-    console.log(insertPos);
+    const { error } = await supabase.rpc("bulk_update_tasks", {
+      input_tasks: update,
+    });
 
-    // Shift the next elements
-    if (insertPos == next || insertPos == previous) {
-      const subarray = tasks
-        .slice(targetIndex)
-        .map((d) => ({ id: d.id, sort_order: d.sort_order + 100 }));
-
-      await supabase.rpc("bulk_update_tasks", {
-        input_tasks: JSON.stringify(subarray),
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        message: error.message,
       });
-
-      insertPos = Math.floor((previous + next + 100) / 2);
     }
-
-    // Update the position
-    await supabase.from("household_tasks").update({ sort_order: insertPos });
 
     return { success: true };
   },

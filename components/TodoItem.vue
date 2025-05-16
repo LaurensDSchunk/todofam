@@ -41,8 +41,7 @@ watch(
 watch(
   () => props.description,
   (value) => {
-    if (!value) return;
-    internalDescription.value = value;
+    internalDescription.value = value || "";
   },
 );
 

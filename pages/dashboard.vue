@@ -14,14 +14,16 @@ async function reorderTask(id: string, up: boolean) {
   if (!up && currentIndex == household.value.tasks.length - 1) return;
 
   const targetIndex = currentIndex + (up ? -1 : 1);
-  console.log(targetIndex);
-  const task = household.value.tasks[currentIndex];
+  const [task] = household.value.tasks.splice(currentIndex, 1);
+  household.value.tasks.splice(targetIndex, 0, task);
 
   const { success } = await useTasks().orderTask(id, targetIndex);
   await useHouseholds().getHousehold(household.value.id);
 
   if (!success) {
     // Revert change
+    const [task] = household.value.tasks.splice(targetIndex, 1);
+    household.value.tasks.splice(currentIndex, 0, task);
   }
 }
 </script>
